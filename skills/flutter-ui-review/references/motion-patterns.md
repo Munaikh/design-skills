@@ -2,7 +2,7 @@
 
 Motion is a construction decision, not a coat of polish. Run the sequence in order; the first two steps may correctly produce no animation. Make the call, explain it in one line, and implement it. Do not present a menu of motion options.
 
-Abdullah AlMunaikh’s motion framework retains purposeful motion, precise ingredients, interruption, spatial consistency, and physical response. Flutter tickers and widget work run through the UI isolate and raster pipeline.
+This motion framework retains purposeful motion, precise ingredients, interruption, spatial consistency, and physical response. Flutter tickers and widget work run through the UI isolate and raster pipeline.
 
 ## 1. Frequency gate
 
@@ -124,9 +124,9 @@ Haptics and sound must be causal, harmonious, and useful. `HapticFeedback.select
 
 Create controllers once in `initState`, update configuration in `didUpdateWidget`, dispose owned controllers/listeners, and use `vsync`. Do not allocate tickers in `build`. Handle `TickerCanceled` when awaiting `.orCancel`, and check mounted before unrelated asynchronous UI updates. `TickerMode` silences tick callbacks while time still advances; it is not an app-wide pause policy. Pause nonessential loops when routes are covered or the app is inactive. Rebuilds, provider refreshes, virtualization, and orientation changes must not restart entrances. [Flutter controller lifecycle](https://api.flutter.dev/flutter/animation/AnimationController-class.html)
 
-Use the project-pinned SDK to format changed Dart code, run static analysis, and run relevant behavioral tests. Test rapid reversal, interrupted exits, scroll-vs-drag ownership, pointer cancellation, keyboard activation, focus restoration, system Back, reduced motion, high contrast, large text, RTL, and safe areas. Test behavior, not an implementation-shaped list of curve literals.
+Use the project-pinned SDK to format changed Dart code, run static analysis, and run relevant behavioral tests. Select checks for the affected motion, gesture, lifecycle, and supported input paths: rapid reversal, interrupted exits, scroll-vs-drag ownership, pointer cancellation, keyboard activation, focus restoration, system Back, reduced motion, high contrast, large text, RTL, and safe areas. New gesture or navigation behavior needs its full relevant interaction coverage; a local appearance repair does not require unrelated gesture tests. Test behavior, not an implementation-shaped list of curve literals.
 
-Use Flutter DevTools frame timing in profile mode to identify UI/raster work, then feel-check a release build on the slowest supported physical device. The approximate frame budget is 16.7ms at 60Hz or 8.3ms at 120Hz; high refresh is a device/engine/platform capability, not a promise. Review at 2–5× duration or with slow animations, interrupt and reverse gestures, and look again with fresh eyes. No simulator-only result proves physical feel or haptic timing.
+For new gesture motion, measured performance repairs, or expensive effects, use Flutter DevTools frame timing in profile mode to identify UI/raster work and feel-check a release build on a representative slow supported physical device when available. Report unavailable checks precisely; do not impose a profile/device sweep on an unrelated small repair. The approximate frame budget is 16.7ms at 60Hz or 8.3ms at 120Hz; high refresh is a device/engine/platform capability, not a promise. For affected transitions, review at 2–5× duration or with slow animations, interrupt and reverse gestures, and look again with fresh eyes. No simulator-only result proves physical feel or haptic timing.
 
 ## Never ship
 

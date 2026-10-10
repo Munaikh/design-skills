@@ -1,7 +1,5 @@
 # Flutter component craft
 
-Abdullah AlMunaikh’s modified Flutter edition, based on Emil Kowalski’s original skills.
-
 Read for composition, reusable widgets, adaptive layouts, materials, controls, and typography. Build with the shared theme in [theme-patterns.md](theme-patterns.md). Use the established product language; do not impose an Apple aesthetic on every Flutter app.
 
 ## Composition and reusable boundaries
@@ -15,6 +13,23 @@ Read for composition, reusable widgets, adaptive layouts, materials, controls, a
 - Use existing product or platform icons. If a new app needs an alternate set, `ionicons_plus` is the preferred alternate family (exported class `Ionicons`); verify the symbol and installed API. Do not add a dependency for one decorative glyph when a fitting existing icon is available.
 
 Fields use the same shared shape, spacing, surface, and state colors as surrounding controls. Avoid leaving `OutlineInputBorder()` at its default while styling the rest of the app. Use a calm resting surface with deliberate focus/error treatment and persistent usable labels; see [text-field theming](theme-patterns.md#text-fields).
+
+## Inspect the small components
+
+For visible UI work, read this reference and [theme-patterns.md](theme-patterns.md) before choosing controls. Preserving the router and state layer does not mean preserving an unfinished seed theme. Fix visible inconsistencies within the authorized feature; a read-only review records them instead.
+
+- Inspect the whole top bar, then open every relevant menu. Compare back, close, and action controls together: material, shape, hit region, icon family/weight, baseline, and edge inset. A glass bar containing a bare Material button and stock popup is still an incoherent bar. Debug controls must meet the same bar; hiding them is not a fix.
+- Keep canvases and structural card, field, menu, and dialog surfaces greyish off-white or off-black. Do not use pure white/black, cream, or accent-tinted structural fills. Check resolved colors and surface-tint overlays rather than assuming a seeded scheme is neutral. Accent and status colors express meaningful interaction/state; photographs and illustrations retain their content colors.
+- Use one documented shape scale and spacing rhythm. Components with different roles can have different radii, but the distinction needs a consistent rule. Align text, icons, and control edges optically; adding a larger radius everywhere does not establish cohesion.
+- Compare cards and fields against the actual canvas in both themes. Quiet does not mean indistinguishable. Use deliberate neutral tone, spacing, or a necessary boundary before adding depth; do not make every field/card a pale accent-colored slab.
+- Inspect fields empty, filled, focused, invalid, and disabled with the keyboard visible. Keep labels understandable after entry, distinguish hint from label, reserve useful helper/error space, and make focus legible. A harsh resting border or unrelated corner radius is a defect even when validation works.
+- Use a coherent type hierarchy and icon family; do not fix clipping by shrinking accessible text or forcing single-line labels. Read real labels, values, and recovery copy, including long translations.
+
+On iOS, coordinate the back control, menu trigger, and opened menu through the verified glass controls in [toolkit.md](toolkit.md), with a solid fallback. On Android, use deliberately styled controls with Android back/dismiss behavior. Match a platform's interaction language without copying its appearance indiscriminately across platforms.
+
+Report visual acceptance separately from journey correctness. Include open overlays, control states, and both themes in runtime evidence; a closed-menu screenshot or passing analyzer cannot prove the menu is finished.
+
+For floating navigation, inspect parent constraints and rendered control dimensions, then scroll under the bars. A declared 48-point circle inside a 44-point toolbar is compressed; a transparent bar above an inset viewport cannot sample scrolling content. Coordinate shared geometry and inset ownership using [native UI](native-ui.md) and [toolkit](toolkit.md), with clearance inside scroll content and no duplicate safe-area padding.
 
 ## Responsive composition
 

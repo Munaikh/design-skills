@@ -34,21 +34,58 @@ class _ReferenceAppState extends State<ReferenceApp> {
       borderRadius: corners,
       borderSide: BorderSide.none,
     );
-    final scheme = ColorScheme.fromSeed(
-      seedColor: const Color(0xFF35634A),
-      brightness: brightness,
-    );
+    final dark = brightness == Brightness.dark;
+    final canvas = Color(dark ? 0xFF171717 : 0xFFF7F7F7);
+    final surface = Color(dark ? 0xFF242424 : 0xFFEFEFEF);
+    final text = Color(dark ? 0xFFEEEEEE : 0xFF202020);
+    final muted = Color(dark ? 0xFFB8B8B8 : 0xFF606060);
+    final scheme =
+        ColorScheme.fromSeed(
+          seedColor: const Color(0xFF35634A),
+          brightness: brightness,
+        ).copyWith(
+          surface: canvas,
+          surfaceDim: Color(dark ? 0xFF121212 : 0xFFDEDEDE),
+          surfaceBright: Color(dark ? 0xFF383838 : 0xFFFAFAFA),
+          surfaceContainerLowest: Color(dark ? 0xFF141414 : 0xFFFAFAFA),
+          surfaceContainerLow: surface,
+          surfaceContainer: Color(dark ? 0xFF292929 : 0xFFE9E9E9),
+          surfaceContainerHigh: Color(dark ? 0xFF303030 : 0xFFE3E3E3),
+          surfaceContainerHighest: Color(dark ? 0xFF383838 : 0xFFDDDDDD),
+          onSurface: text,
+          onSurfaceVariant: muted,
+          inverseSurface: Color(dark ? 0xFFEEEEEE : 0xFF292929),
+          onInverseSurface: Color(dark ? 0xFF202020 : 0xFFEEEEEE),
+          surfaceTint: Colors.transparent,
+          outline: Color(dark ? 0xFF858585 : 0xFF747474),
+          outlineVariant: Color(dark ? 0xFF484848 : 0xFFCCCCCC),
+        );
     return ThemeData(
       colorScheme: scheme,
       splashFactory: NoSplash.splashFactory,
       splashColor: Colors.transparent,
       platform: widget.platform,
-      scaffoldBackgroundColor: brightness == Brightness.light
-          ? const Color(0xFFF8F7F3)
-          : const Color(0xFF151C18),
+      scaffoldBackgroundColor: canvas,
+      canvasColor: canvas,
+      appBarTheme: AppBarThemeData(
+        backgroundColor: canvas,
+        foregroundColor: text,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+      ),
+      popupMenuTheme: PopupMenuThemeData(
+        color: surface,
+        surfaceTintColor: Colors.transparent,
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: surface,
+        surfaceTintColor: Colors.transparent,
+      ),
       cardTheme: CardThemeData(
         elevation: 0,
         color: scheme.surfaceContainerLow,
+        surfaceTintColor: Colors.transparent,
         shape: const RoundedRectangleBorder(borderRadius: corners),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -111,6 +148,55 @@ class _ReferenceAppState extends State<ReferenceApp> {
   );
 }
 
+// The same geometry sizes the chrome and clears content inside scrollables.
+const journeyToolbarExtent = 48.0;
+
+class JourneyScrollInsets extends InheritedWidget {
+  const JourneyScrollInsets({
+    super.key,
+    required this.insets,
+    required super.child,
+  });
+  final EdgeInsets insets;
+
+  static EdgeInsets contentPaddingOf(BuildContext context) {
+    final insets =
+        context
+            .dependOnInheritedWidgetOfExactType<JourneyScrollInsets>()
+            ?.insets ??
+        EdgeInsets.zero;
+    return const EdgeInsets.all(24) + insets;
+  }
+
+  @override
+  bool updateShouldNotify(JourneyScrollInsets oldWidget) =>
+      insets != oldWidget.insets;
+}
+
+class JourneyStatusViewport extends StatelessWidget {
+  const JourneyStatusViewport({super.key, required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final padding = JourneyScrollInsets.contentPaddingOf(context);
+      return SingleChildScrollView(
+        padding: padding,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: (constraints.maxHeight - padding.vertical).clamp(
+              0,
+              double.infinity,
+            ),
+          ),
+          child: Center(child: child),
+        ),
+      );
+    },
+  );
+}
+
 class JourneyShell extends StatefulWidget {
   const JourneyShell({super.key, required this.store});
   final PlaceStore store;
@@ -124,6 +210,8 @@ class _JourneyShellState extends State<JourneyShell> {
     GlobalKey<NavigatorState>(),
   ];
   PlaceStore get store => widget.store;
+  final scenarioMenu = GlassMenuController();
+  bool isScenarioMenuOpen = false;
 
   Widget navigator(int tab) => Navigator(
     key: navigatorKeys[tab],
@@ -150,36 +238,85 @@ class _JourneyShellState extends State<JourneyShell> {
     final isApple = Theme.of(context).platform == TargetPlatform.iOS;
     final title =
         store.currentDetail?.name ?? (store.tab == 0 ? 'Discover' : 'Saved');
+    final backLabel = 'Back to ${store.tab == 0 ? 'Discover' : 'Saved'}';
+    void goBack() => navigatorKeys[store.tab].currentState!.pop();
     final back = store.currentDetail == null
         ? null
+        : isApple
+        ? GlassIconButton(
+            key: const ValueKey('back_to_list'),
+            semanticLabel: backLabel,
+            size: journeyToolbarExtent,
+            iconSize: 24,
+            onPressed: goBack,
+            icon: const Icon(CupertinoIcons.back),
+          )
         : IconButton(
             key: const ValueKey('back_to_list'),
-            tooltip: 'Back to ${store.tab == 0 ? 'Discover' : 'Saved'}',
-            onPressed: () => navigatorKeys[store.tab].currentState!.pop(),
-            icon: Icon(isApple ? CupertinoIcons.back : Icons.arrow_back),
+            tooltip: backLabel,
+            onPressed: goBack,
+            icon: const Icon(Icons.arrow_back),
           );
-    final scenarioPicker = kDebugMode
-        ? PopupMenuButton<Fixture>(
+    String fixtureLabel(Fixture fixture) => switch (fixture) {
+      Fixture.demo => 'Reset demo',
+      Fixture.loadFailure => 'Load failure',
+      Fixture.saveFailure => 'Save failure',
+      Fixture.empty => 'Empty places',
+    };
+    final scenarioPicker = !kDebugMode
+        ? null
+        : isApple
+        ? GlassMenu(
+            controller: scenarioMenu,
+            onClose: () {
+              if (mounted) setState(() => isScenarioMenuOpen = false);
+            },
+            autoAdjustToScreen: true,
+            menuWidth: 240,
+            morphSpeed: MediaQuery.disableAnimationsOf(context)
+                ? MorphSpeed.instant
+                : MorphSpeed.normal,
+            triggerBuilder: (_, toggle) => GlassIconButton(
+              key: const ValueKey('test_scenarios'),
+              semanticLabel: 'Test scenarios',
+              size: journeyToolbarExtent,
+              iconSize: 24,
+              onPressed: () {
+                setState(() => isScenarioMenuOpen = !scenarioMenu.isOpen);
+                toggle();
+              },
+              icon: const Icon(CupertinoIcons.lab_flask),
+            ),
+            items: [
+              for (final fixture in Fixture.values)
+                GlassMenuItem(
+                  key: ValueKey('fixture_${fixture.name}'),
+                  title: fixtureLabel(fixture),
+                  titleStyle: TextStyle(
+                    fontSize: 17,
+                    height: 1.2,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  height: 48,
+                  maxLines: 2,
+                  onTap: () => store.setFixture(fixture),
+                ),
+            ],
+          )
+        : PopupMenuButton<Fixture>(
             key: const ValueKey('test_scenarios'),
             tooltip: 'Test scenarios',
             onSelected: store.setFixture,
-            itemBuilder: (_) => Fixture.values
-                .map(
-                  (fixture) => PopupMenuItem(
-                    key: ValueKey('fixture_${fixture.name}'),
-                    value: fixture,
-                    child: Text(switch (fixture) {
-                      Fixture.demo => 'Reset demo',
-                      Fixture.loadFailure => 'Load failure',
-                      Fixture.saveFailure => 'Save failure',
-                      Fixture.empty => 'Empty places',
-                    }),
-                  ),
-                )
-                .toList(),
+            itemBuilder: (_) => [
+              for (final fixture in Fixture.values)
+                PopupMenuItem(
+                  key: ValueKey('fixture_${fixture.name}'),
+                  value: fixture,
+                  child: Text(fixtureLabel(fixture)),
+                ),
+            ],
             icon: const Icon(Icons.science_outlined),
-          )
-        : null;
+          );
     final body = IndexedStack(
       index: store.tab,
       children: [
@@ -187,32 +324,38 @@ class _JourneyShellState extends State<JourneyShell> {
           TickerMode(enabled: store.tab == i, child: navigator(i)),
       ],
     );
+    final appleTabs = GlassTabBar.bottom(
+      key: const ValueKey('glass_tabs'),
+      selectedIndex: store.tab,
+      onTabSelected: (tab) {
+        FocusScope.of(context).unfocus();
+        store.selectTab(tab);
+      },
+      tabs: const [
+        GlassTab(icon: Icon(CupertinoIcons.compass), label: 'Discover'),
+        GlassTab(icon: Icon(CupertinoIcons.bookmark), label: 'Saved'),
+      ],
+    );
     final shell = isApple
         ? Material(
             child: GlassScaffold(
-              extendBody: false,
+              extendBody: true,
+              resizeToAvoidBottomInset: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               appBar: GlassAppBar(
+                toolbarHeight: journeyToolbarExtent,
                 title: Text(title),
                 leading: back,
                 actions: [?scenarioPicker],
               ),
-              bottomBar: GlassTabBar.bottom(
-                key: const ValueKey('glass_tabs'),
-                selectedIndex: store.tab,
-                onTabSelected: (tab) {
-                  FocusScope.of(context).unfocus();
-                  store.selectTab(tab);
-                },
-                tabs: const [
-                  GlassTab(
-                    icon: Icon(CupertinoIcons.compass),
-                    label: 'Discover',
-                  ),
-                  GlassTab(icon: Icon(CupertinoIcons.bookmark), label: 'Saved'),
-                ],
+              bottomBar: appleTabs,
+              body: JourneyScrollInsets(
+                insets: EdgeInsets.only(
+                  top: MediaQuery.paddingOf(context).top + journeyToolbarExtent,
+                  bottom: appleTabs.preferredSize.height,
+                ),
+                child: Material(type: MaterialType.transparency, child: body),
               ),
-              body: Material(type: MaterialType.transparency, child: body),
             ),
           )
         : Scaffold(
@@ -243,10 +386,13 @@ class _JourneyShellState extends State<JourneyShell> {
             ),
           );
     return PopScope(
-      canPop: store.currentDetail == null && store.tab == 0,
+      canPop:
+          !isScenarioMenuOpen && store.currentDetail == null && store.tab == 0,
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
-        if (store.currentDetail != null) {
+        if (isScenarioMenuOpen) {
+          scenarioMenu.close();
+        } else if (store.currentDetail != null) {
           navigatorKeys[store.tab].currentState!.pop();
         } else if (store.tab != 0) {
           store.selectTab(0);
@@ -264,7 +410,7 @@ class PlaceBrowser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (tab == 0 && store.loadState == LoadState.loading) {
-      return Center(
+      return JourneyStatusViewport(
         child: Semantics(
           label: 'Loading places',
           child: CircularProgressIndicator(),
@@ -292,7 +438,7 @@ class PlaceBrowser extends StatelessWidget {
     return ListView(
       key: ValueKey('place_list_$tab'),
       controller: store.scroll[tab],
-      padding: const EdgeInsets.all(24),
+      padding: JourneyScrollInsets.contentPaddingOf(context),
       children: [
         Text(
           tab == 0
@@ -311,6 +457,7 @@ class PlaceBrowser extends StatelessWidget {
           TextField(
             key: const ValueKey('search_places'),
             controller: store.search,
+            scrollPadding: JourneyScrollInsets.contentPaddingOf(context),
             onChanged: (_) => store.refreshSearch(),
             textInputAction: TextInputAction.search,
             decoration: const InputDecoration(
@@ -327,6 +474,7 @@ class PlaceBrowser extends StatelessWidget {
                 : 'Try another search or return to all places.',
             action: tab == 1 ? 'Explore places' : 'Clear search',
             actionKey: 'empty_action',
+            embedded: true,
             onPressed: () {
               if (tab == 1) {
                 store.selectTab(0);
@@ -382,7 +530,12 @@ class PlaceTile extends StatelessWidget {
               : place.area,
         ),
       ),
-      trailing: Icon(saved ? Icons.bookmark : Icons.chevron_right),
+      trailing: saved
+          ? Semantics(
+              label: 'Saved',
+              child: ExcludeSemantics(child: Icon(Icons.bookmark)),
+            )
+          : const ExcludeSemantics(child: Icon(Icons.chevron_right)),
       onTap: onTap,
     ),
   );
@@ -434,19 +587,19 @@ class _PlaceDetailState extends State<PlaceDetail> {
       final content = ListView(
         key: ValueKey('detail_content_${place.id}'),
         controller: store.detailScroll(place, tab),
-        padding: const EdgeInsets.all(24),
+        padding: JourneyScrollInsets.contentPaddingOf(context),
         children: [
           Container(
             height: 144,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondaryContainer,
-              borderRadius: BorderRadius.circular(24),
+              color: Theme.of(context).colorScheme.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(20),
             ),
             child: ExcludeSemantics(
               child: Icon(
                 place.icon,
                 size: 64,
-                color: Theme.of(context).colorScheme.onSecondaryContainer,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ),
@@ -465,6 +618,7 @@ class _PlaceDetailState extends State<PlaceDetail> {
           TextField(
             key: const ValueKey('place_note'),
             controller: note,
+            scrollPadding: JourneyScrollInsets.contentPaddingOf(context),
             minLines: 2,
             maxLines: 4,
             onChanged: (_) => store.refreshSearch(),
@@ -541,22 +695,24 @@ class _PlaceDetailState extends State<PlaceDetail> {
           if (wide)
             SizedBox(
               width: 280,
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Your visit',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(place.area),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Keep a useful note now, so you can pick up where you left off.',
-                    ),
-                  ],
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: JourneyScrollInsets.contentPaddingOf(context),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Your visit',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(place.area),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Keep a useful note now, so you can pick up where you left off.',
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -576,38 +732,38 @@ class RecoveryPanel extends StatelessWidget {
     this.action,
     this.actionKey,
     this.onPressed,
+    this.embedded = false,
   }) : assert((action == null) == (onPressed == null));
   final String title;
   final String detail;
   final String? action;
   final String? actionKey;
   final VoidCallback? onPressed;
+  final bool embedded;
   @override
-  Widget build(BuildContext context) => Center(
-    child: SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 12),
-            Text(detail, textAlign: TextAlign.center),
-            if (action case final String label) ...[
-              const SizedBox(height: 24),
-              FilledButton(
-                key: actionKey == null ? null : ValueKey<String>(actionKey!),
-                onPressed: onPressed,
-                child: Text(label),
-              ),
-            ],
-          ],
+  Widget build(BuildContext context) {
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
-      ),
-    ),
-  );
+        const SizedBox(height: 12),
+        Text(detail, textAlign: TextAlign.center),
+        if (action case final String label) ...[
+          const SizedBox(height: 24),
+          FilledButton(
+            key: actionKey == null ? null : ValueKey<String>(actionKey!),
+            onPressed: onPressed,
+            child: Text(label),
+          ),
+        ],
+      ],
+    );
+    return embedded
+        ? Padding(padding: const EdgeInsets.all(24), child: content)
+        : JourneyStatusViewport(child: content);
+  }
 }

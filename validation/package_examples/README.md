@@ -1,4 +1,4 @@
-# Abdullah AlMunaikh’s preferred-library examples
+# Preferred-library examples
 
 This isolated package checks composition against the committed dependency lock without adding optional libraries to the Places app. It demonstrates Motor spring interruption, Flutter Animate sequences, Heroine registration/tags, offline Google Fonts policy, Ionicons, accessible FL Chart summaries, Lottie completion fallback, owned Rive loaders, Smooth Sheets note editing, and optional Motion device tilt. Liquid Glass is exercised in the reference app.
 
@@ -18,4 +18,4 @@ Motion **2.0.2** supplies optional decorative tilt with a separate controller pe
 
 Validated on Flutter **3.47.7** / Dart **3.13.5**: analysis passed and four widget tests passed. The tests check spring continuity during retargeting and final selection state, accessible reduced-motion fallbacks without opening assets or sensor widgets, a chart's readable summary, and sheet draft retention through close/reopen/save. Heroine registration, Google Fonts, Ionicons, and asset loader calls are covered by analysis; native shared-element flights, font loading, and Lottie/Rive playback still require product assets and device testing. The sheet test uses zero-duration route transitions and does not verify gesture physics or platform keyboard behavior.
 
-Author: Abdullah AlMunaikh. Repository attribution and MIT license apply.
+Repository attribution and MIT license apply.

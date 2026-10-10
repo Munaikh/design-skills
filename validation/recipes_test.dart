@@ -19,6 +19,51 @@ Widget host(Widget child, {bool reduced = false}) => MaterialApp(
 );
 
 void main() {
+  test('theme keeps structural surfaces neutral and text readable in both modes', () {
+    double contrast(Color a, Color b) {
+      final first = a.computeLuminance();
+      final second = b.computeLuminance();
+      final lighter = first > second ? first : second;
+      final darker = first > second ? second : first;
+      return (lighter + 0.05) / (darker + 0.05);
+    }
+
+    for (final brightness in Brightness.values) {
+      final theme = buildAppTheme(brightness);
+      final colours = theme.colorScheme;
+      final surfaces = <Color>[
+        theme.scaffoldBackgroundColor,
+        colours.surface,
+        colours.surfaceDim,
+        colours.surfaceBright,
+        colours.surfaceContainerLowest,
+        colours.surfaceContainerLow,
+        colours.surfaceContainer,
+        colours.surfaceContainerHigh,
+        colours.surfaceContainerHighest,
+        colours.inverseSurface,
+        theme.cardTheme.color!,
+        theme.inputDecorationTheme.fillColor!,
+        theme.popupMenuTheme.color!,
+        theme.dialogTheme.backgroundColor!,
+        theme.bottomSheetTheme.backgroundColor!,
+      ];
+      for (final surface in surfaces) {
+        expect(surface.r, surface.g, reason: 'Structural surface must be neutral');
+        expect(surface.g, surface.b);
+        expect(surface.r, inExclusiveRange(0, 1));
+      }
+      for (final backdrop in [colours.surface, colours.surfaceContainerLow]) {
+        expect(contrast(colours.onSurface, backdrop), greaterThanOrEqualTo(4.5));
+        expect(contrast(colours.onSurfaceVariant, backdrop), greaterThanOrEqualTo(4.5));
+      }
+      expect(contrast(colours.onInverseSurface, colours.inverseSurface), greaterThanOrEqualTo(4.5));
+      expect(contrast(colours.primary, colours.surfaceContainerLow), greaterThanOrEqualTo(3));
+      expect(theme.splashFactory, NoSplash.splashFactory);
+      expect(colours.surfaceTint.a, 0);
+    }
+  });
+
   test('projection respects direction, bounds, and invalid inputs', () {
     expect(
       projectWithinBounds(

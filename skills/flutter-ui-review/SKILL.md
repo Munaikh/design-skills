@@ -2,23 +2,29 @@
 name: flutter-ui-review
 description: Review Flutter mobile UX, navigation, accessibility, visual design, and animation. Use for diff reviews, app audits, improvement opportunities, or requested hostile-data stress testing.
 metadata:
-  author: Abdullah AlMunaikh
+  author: Abdullah
   edition: Flutter mobile UX and design
 ---
 
 # Flutter UI Review
 
-Abdullah AlMunaikh’s modified Flutter edition, based on Emil Kowalski’s design-skills. Preserve original MIT attribution. UI review includes the user’s complete task, not just visual polish.
+Modified Flutter edition, based on Emil Kowalski’s design-skills. Preserve original MIT attribution. UI review includes the user’s complete task, not just visual polish.
 
 Follow the [Flutter/Dart coding conventions](references/dart-engineering.md): inspect project truth, preserve architecture and generation patterns, keep typed readable code and flat widget composition, and validate proportionally. For Flutter-side UI, use Flutter Animate by default for effects, or simple implicit widgets such as AnimatedContainer. Use Motor for physics and Heroine for shared elements; do not introduce stock Hero. Use Smooth Sheets for sheets and Motion for purposeful 3D tilt/parallax. Reserve low-level stock controllers, tween timelines, and simulations for very complex custom animation mixers that these tools cannot express. Follow the [preferred toolkit](references/toolkit.md) for integration details.
 
 Use no ink splashes or ripples: disable them centrally with `NoSplash.splashFactory` and transparent `splashColor`, and audit local overrides. Build intentional custom components or deliberately themed semantic primitives; do not use unstyled stock Material for everything. Preserve pressed, focused, selected, and disabled feedback. Keep shadows restrained, shared, and purposeful for hierarchy, following Emil’s cohesion and attention to unseen details. See [theme and component appearance](references/theme-patterns.md).
 
+## Visual inspection for visible UI work
+
+Before building or judging visible UI, read [theme foundations](references/theme-patterns.md). Inspect the affected screen and its opened menus in light and dark themes: compare back and action controls together, field/card separation, shape, spacing, icon weight, type, and focus/error states. Use greyish off-white/off-black structural surfaces, never pure white/black or colored canvas defaults. A glass app bar does not make a stock child button or popup coherent. Check the trigger and opened overlay, not only the shell. Verify rendered control bounds against parent constraints, and scroll content beneath glass chrome while keeping initial and final controls reachable; a declared square size or transparent bar alone proves neither. Passing journey tests or analysis does not establish visual quality; report UX and visual evidence separately. If runtime inspection is unavailable, identify that limit rather than claiming a visual pass.
+
+Preserve architecture and approved product intent, but do not treat unfinished seed styling as an approved design system. Fix observed visual defects within authorized implementation scope; keep reviews read-only unless fixes were requested. Apply this check proportionally to the affected UI, not to unrelated screens or pure non-UI bridge/data changes.
+
 ## Select the requested mode
 
 | Request | Mode and reference |
 | --- | --- |
-| Review a diff, screen, or journey | Inspect verified locations and task completion using [Mobile UX](references/mobile-ux.md), [accessibility](references/mobile-accessibility.md), and applicable [motion standards](references/standards.md) |
+| Review a diff, screen, or journey | Inspect verified locations and task completion using [Mobile UX](references/mobile-ux.md), [accessibility](references/mobile-accessibility.md), and applicable [UX, visual, and motion standards](references/standards.md) |
 | Audit an app or create/execute improvement plans | [Audit](references/audit.md), [plan template](references/plan-template.md) |
 | Find places that would benefit from motion | [Opportunities](references/opportunities.md); include rejected candidates and accept zero suggestions |
 | Break/test a screen with difficult content | [Hostile data](references/hostile-data.md); use isolated fixtures only when a harness is requested |

@@ -1,7 +1,5 @@
 ## Prototype genuinely different directions
 
-Abdullah AlMunaikh’s modified Flutter edition, based on Emil Kowalski’s original skills.
-
 Use when the user explicitly requests variants or an exploration. Size the prototype to the design question: one component for a local interaction, or a complete short journey when navigation, recovery, or task completion is the question. State the bounded task and give every variant the same entry point and completion criteria. Keep production source unchanged during exploration; use isolated fixtures and fake side effects. A normal implementation task builds directly in the user’s app and does not require a prototype app. Integrate only the selected variant; an explicit prior selection already supplies the choice.
 
 1. Restate the task or component, its entry point, where it lives, and how completion will be recognized.
@@ -23,7 +21,7 @@ Give the running target/entry point and picker shortcuts. Let the user choose wh
 The picker is harness chrome, not a contestant. Keep this appearance stable rather than applying the app's brand tokens. Use the fixed Flutter harness style rather than treating it as product design advice.
 
 - Floating dark pill, bottom-center, 24 logical pixels outside the safe area content edge; move to top-center only when the preview occupies the bottom-center. Allow safe-area/keyboard clearance and scrolling/adaptive wrapping when names do not fit; no clipped or inaccessible picker.
-- Background black at 0.82 opacity, white inset/hairline border at 0.08, restrained black shadows (blur 24/offset 8/opacity 0.24 and blur 6/offset 2/opacity 0.12). Use a clipped 12-sigma `BackdropFilter` only if it performs; the source saturation effect has no required one-property Flutter equivalent.
+- Background greyish off-black (`#171717`) at 0.82 opacity, off-white (`#EEEEEE`) inset/hairline border at 0.08, restrained dark shadows (blur 24/offset 8/opacity 0.24 and blur 6/offset 2/opacity 0.12). These are harness defaults adapted to this edition's neutral-surface policy. Use a clipped 12-sigma `BackdropFilter` only if it performs; the source saturation effect has no required one-property Flutter equivalent.
 - Outer padding 4, gap 2, pill-shaped corners. Neutral platform font, text size 13. Active text white, inactive white at 0.55, actual hover white at 0.85. Preserve visible focus with a white 0.4 outline, 2 logical pixels thick and offset 2.
 - Active highlight white at 0.12. Source visual rows are 28 high with 12 horizontal padding; **expand hit targets to platform/accessibility minima** instead of using undersized targets. Divider 1×16 with 4 horizontal margin; replay has 10 horizontal padding and text/icon size 14.
 - Initial highlight settles without animation. Eligible pointer switching may move the highlight over 250ms with `Cubic(0.23, 1, 0.32, 1)` as orientation feedback; the preview itself switches instantly. Keyboard switching and reduced-motion settings keep highlight and preview instant. Hardware keyboard switching stays immediate.

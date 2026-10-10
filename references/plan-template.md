@@ -1,7 +1,5 @@
 # Flutter motion implementation plan
 
-Abdullah AlMunaikh’s modified Flutter edition, based on Emil Kowalski’s original skills.
-
 Use one plan per repair or tightly coupled change. Each executor has no prior conversation context.
 
 ````markdown

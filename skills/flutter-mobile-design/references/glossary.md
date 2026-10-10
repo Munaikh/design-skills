@@ -1,6 +1,6 @@
 # Mobile design and motion vocabulary
 
-Abdullah AlMunaikh’s substantial Flutter mobile adaptation of Emil Kowalski’s design-engineering principles. Emil’s contribution is the discipline of purposeful motion, restraint, cohesion, practiced taste, and invisible correctness. The mobile vocabulary, implementation policy, and technical clarifications below belong to Abdullah AlMunaikh’s modified edition; they are not quotations or numerical rules attributed to Emil.
+A Flutter mobile adaptation of Emil Kowalski’s design-engineering principles. Emil’s contribution is the discipline of purposeful motion, restraint, cohesion, practiced taste, and invisible correctness. The mobile vocabulary, implementation policy, and technical clarifications below belong to this modified edition; they are not quotations or numerical rules attributed to Emil.
 
 ## Use this to understand an interaction
 
@@ -17,6 +17,7 @@ For implementation, first identify the user’s task and why the change would he
 | Why does the dragged object jump or bounce incorrectly? | Physics and direct manipulation |
 | What replaces a ripple, or supports assistive interaction? | Controls, input, and access |
 | How should depth, shadows, and glass work? | Materials and visual hierarchy |
+| Why do controls or surfaces look inconsistent? | Materials and visual hierarchy; inspect actual open overlays and field states |
 | How should loading, numbers, or illustrations communicate? | Content and status |
 | Is the interaction actually smooth and responsive? | Rendering and verification |
 
@@ -50,7 +51,7 @@ For journey acceptance, back behavior, forms, and hinge-safe continuity, use [mo
 | Restraint | Omitting or reducing treatments whose attention cost exceeds their benefit. Zero added motion is a legitimate crafted result; restraint also applies to cards, shadows, blur, and unnecessary steps. |
 | Cohesion | Agreement between product purpose, language, controls, typography, materials, and motion. It does not require identical animation on every element; deliberate differences can distinguish different roles while preserving one design system. |
 | Invisible craft | Correct handling of details people should not need to notice: stable targets, predictable cancellation, readable labels, retained drafts, useful focus return, and safe resource ownership. Decoration cannot substitute for these details. |
-| Product character | The consistent qualities an experience communicates through its choices, such as clarity, calm, efficiency, or playfulness. Derive them from the product and people using it; do not impose one palette, font, or bouncy personality on every app. |
+| Product character | The consistent qualities an experience communicates through its choices, such as clarity, calm, efficiency, or playfulness. Derive them from the product and people using it. This edition requires neutral structural surfaces; distinguish products through fitting accent, imagery, type, composition, and behavior rather than colored canvases or a prescribed bouncy personality. |
 | Perceived responsiveness | How promptly a person sees that the interface heard an action and understands what happens next. Immediate pressed/status feedback helps; it does not reduce network latency or justify displaying success before completion. |
 | Delight | A positive response to a coherent, useful experience, sometimes reinforced by a rare expressive moment. Celebration must not conceal failure, delay a primary action, or repeatedly demand attention. |
 
@@ -162,6 +163,11 @@ No ink splash/ripple applies to custom components, package controls, themed prim
 | Term | Meaning and restrained application |
 | --- | --- |
 | Surface | A visual region grouping content or controls. Its shape, tone, boundaries, and interaction establish its role; wrapping every paragraph in a card does not create useful structure. |
+| Neutral structural palette | Greyish off-white and off-black tones for canvases, cards, fields, menus, dialogs, and solid fallbacks. This edition excludes pure white/black, cream, and accent-tinted structural fills. Neutral means deliberate grey tones, not merely low saturation; seeded surface roles and elevation tint need inspection. |
+| Accent / semantic color | Accent gives deliberate emphasis to actions or selection; semantic color communicates a real status such as error. Neither is a reason to tint every structural surface. Content imagery retains its actual colors. |
+| Component family | Controls whose shape rules, icon weight, spacing, material, and state treatments agree. Related back and menu controls should belong to the same family; a glass app bar alone does not style its children or popup overlay. |
+| Shape scale | A documented set of shapes/radii assigned by component role. Cohesion allows deliberate role differences; an input's default outline/radius beside otherwise styled controls is not a shape system. |
+| Surface separation | Perceivable grouping or layering through spacing, neutral tone, necessary boundary, overlap, or restrained depth. It differs from text contrast compliance; a readable field can still visually dissolve into its canvas. |
 | Elevation | Perceived separation or position in a visual depth hierarchy. Shadow, overlap, tone, material, and occlusion can communicate it. A framework elevation number is an input to that component’s rendering, not universal physical distance. |
 | Shadow | A visual cue that a surface occludes light, suggesting separation from another surface. Use restrained shared tokens only where they clarify hierarchy; inspect shape, backdrop, clipping, and light/dark appearance rather than adding shadow to every card. |
 | Contact / diffuse shadow | Contact shadow suggests nearby attachment or occlusion; a softer spread suggests more diffuse separation. These are useful visual distinctions, not a required two-layer recipe or a set of numeric values attributed to Emil. |
@@ -175,7 +181,7 @@ No ink splash/ripple applies to custom components, package controls, themed prim
 | Optical sizing | Typeface-specific adjustments designed for different display sizes, sometimes exposed through a variable-font axis. It is not simply scaling text; use it only when the selected font supports the feature. |
 | Tabular figures | Digits designed with equal advance widths, reducing horizontal shifts in changing numeric values. They depend on font support and do not make all text monospaced or remove changes caused by differing digit counts. |
 
-These are Abdullah AlMunaikh’s Flutter applications of cohesion and invisible craft. No universal shadow opacity, offset, blur, or elevation is claimed as Emil’s prescription. Use centralized tokens, actual content, and measured rendering evidence.
+These are Flutter applications of cohesion and invisible craft. No universal shadow opacity, offset, blur, or elevation is claimed as Emil’s prescription. Use centralized tokens, actual content, and measured rendering evidence. Inspect open menus, paired navigation controls, and empty/focused/error fields in both themes; naming a material does not establish visual quality or accessible contrast.
 
 ## Content and status
 

@@ -1,4 +1,4 @@
-# Abdullah AlMunaikh’s preferred Flutter toolkit
+# Preferred Flutter toolkit
 
 Use this capability map for new mobile features. Preserve suitable product components and existing dependencies first. Use Flutter Animate for effect composition, simple implicit widgets for local targets, Motor for physics, Heroine for shared elements, Smooth Sheets for sheets, and Motion for purposeful 3D tilt. Handwritten controller/tween timelines are reserved for genuinely complex custom mixers. Preserve suitable existing architecture without a gratuitous replacement. Do not install the whole list into an app. Review SDK constraints, lockfile, actual API, license, platform support, lifecycle, and accessibility before adopting a dependency.
 
@@ -24,9 +24,19 @@ Package choice follows the user journey. Preserve router, business state, and pl
 
 `liquid_glass_widgets` supplies Flutter-rendered iOS-style surfaces. Use `GlassScaffold` with `GlassAppBar` and `GlassTabBar.bottom` as the primary screen pattern; `GlassToolbar` serves grouped actions. Use the package's sheets, menus, and controls when appropriate. Keep readable content and list rows opaque; glass belongs primarily to the navigation/control layer. On Android preserve Android-appropriate controls and back behavior unless the product explicitly chooses a shared glass treatment.
 
-Initialize the actual binding before `LiquidGlassWidgets.initialize()`, then use `LiquidGlassWidgets.wrap()`. For a `MaterialApp`, supply `brightnessResolver: Theme.maybeBrightnessOf` so glass follows the app theme. Keep app-wide glass settings central. `GlassScaffold` manages background, bar placement, safe areas and edge handling; avoid manually stacking repeated filters around glass controls. Nested refractive wrappers can damage rendering and interaction.
+Treat the app bar, back control, menu trigger, and opened menu as one component family. Putting `IconButton` or `PopupMenuButton` inside `GlassAppBar` does not make their appearance or overlay glass. Prefer a matching `GlassIconButton` for back/close and `GlassMenu` with a deliberate trigger, or `GlassPullDownButton` with `GlassMenuItem` entries. Verify these APIs against the installed package before implementation. Supply meaningful localized `semanticLabel` values for icon-only controls, consistent hit regions and icon weight, and correct back/dismiss/focus-return behavior. Keep debug/scenario actions available and intentionally styled.
 
-A complete runnable example is part of this edition's reference app. Its setup and screen composition use the following APIs; verify names against the installed package:
+Inspect the opened overlay, not just its trigger: menu positioning, long labels, selected/disabled rows, safe edges, dismissal, and neutral/legible material over actual content. Wrapper keys or labels may not reach an inner actionable child; inspect the runtime tree and place stable keys on actual controls where the integration allows it. Never replace an accessible control with an unlabeled tap detector to obtain a particular appearance. Provide a coherent solid alternative rather than mixing unrelated bare controls into a glass bar.
+
+Set all structural surfaces to deliberate greyish off-white/off-black, including scaffolds, cards, fields, menus and solid fallbacks. A seed color or default surface tint must not leak accent into the canvas. Glass can reveal underlying content, so check composited contrast rather than assigning it a nominal background color.
+
+Check the toolbar’s constraints against its children. In installed 1.11.1, `GlassAppBar` defaults to a 44-point `toolbarHeight`; a `GlassIconButton(size: 48)` in that row is constrained to 48×44, so its oval becomes visibly flattened. Coordinate button size and toolbar height through shared geometry, then verify actual rendered width/height and hit bounds. Do not shrink the accessible target merely to hide the mismatch; allow enough toolbar space for the chosen controls and title.
+
+For the floating glass navigation pattern, keep `GlassScaffold(extendBody: true)` so the scroll viewport extends beneath the bars. `false` deliberately confines the body between them and is appropriate only for a specifically chosen non-overlapping layout. Put initial top clearance and final bottom clearance in scroll content padding or slivers; do not wrap the whole scroll viewport in outer bar-sized padding or a redundant `SafeArea`. Clearances depend on the actual bar geometry, safe areas, and keyboard handling, applied once. Verify both initial placement and the scrolled state, including a fully reachable final action and retained scroll position. Choose edge effects for readable chrome without treating a visually empty strip as proof that content is behind glass.
+
+Initialize the actual binding before `LiquidGlassWidgets.initialize()`, then use `LiquidGlassWidgets.wrap()`. For a `MaterialApp`, supply `brightnessResolver: Theme.maybeBrightnessOf` so glass follows the app theme. Keep app-wide glass settings central. `GlassScaffold` manages background, bar placement, and edge effects; verify who owns body-content insets in the installed implementation rather than assuming automatic spacers. In 1.11.1, `extendBody: true` positions the body full-size, but its build path does not insert the top spacer described in its comments; avoid manually stacking repeated filters around glass controls. Nested refractive wrappers can damage rendering and interaction.
+
+The reference app exercises these APIs and journeys; a runnable fixture is not automatic evidence of finished visual craft. Inspect its child controls, opened overlays, and resolved colors against the current guidance. Verify the following names against the installed package:
 
 ```text
 WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +47,11 @@ runApp(LiquidGlassWidgets.wrap(
 ));
 
 GlassScaffold(
-  appBar: GlassAppBar(title: const Text('Discover')),
+  extendBody: true,
+  appBar: GlassAppBar(
+    toolbarHeight: 48, // Match 48-point glass controls when present.
+    title: const Text('Discover'),
+  ),
   bottomBar: GlassTabBar.bottom(
     selectedIndex: selectedIndex,
     onTabSelected: selectTab,
@@ -46,7 +60,7 @@ GlassScaffold(
       GlassTab(icon: Icon(CupertinoIcons.bookmark), label: 'Saved'),
     ],
   ),
-  body: content,
+  body: content, // Scroll viewport fills the shell; content owns bar clearance.
 )
 ```
 

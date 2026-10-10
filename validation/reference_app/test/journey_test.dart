@@ -36,6 +36,119 @@ Future<void> tap(WidgetTester tester, String key) async {
 }
 
 void main() {
+  testWidgets('iOS chrome keeps square controls and content-owned clearance', (
+    tester,
+  ) async {
+    tester.view.physicalSize =
+        const Size(402, 874) * tester.view.devicePixelRatio;
+    tester.view.padding = FakeViewPadding(
+      top: 62 * tester.view.devicePixelRatio,
+      bottom: 34 * tester.view.devicePixelRatio,
+    );
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetPadding);
+    addTearDown(tester.view.resetViewInsets);
+    final store = PlaceStore(latency: Duration.zero);
+    addTearDown(store.dispose);
+    await tester.pumpWidget(
+      ReferenceApp(store: store, platform: TargetPlatform.iOS),
+    );
+    await tester.pumpAndSettle();
+    final list = find.byKey(const ValueKey('place_list_0'));
+    final appBar = find.byKey(const ValueKey('glass_scaffold_app_bar'));
+    final tabs = find.byKey(const ValueKey('glass_tabs'));
+    expect(tester.getRect(list).top, 0);
+    expect(tester.getRect(list).bottom, tester.getRect(tabs).bottom);
+    final listPadding = tester.widget<ListView>(list).padding! as EdgeInsets;
+    expect(listPadding.top, tester.getRect(appBar).bottom + 24);
+    expect(listPadding.bottom, tester.getSize(tabs).height + 24);
+    expect(
+      tester.getSize(find.byKey(const ValueKey('test_scenarios'))),
+      const Size(journeyToolbarExtent, journeyToolbarExtent),
+    );
+    await tap(tester, 'place_garden');
+    expect(
+      tester.getSize(find.byKey(const ValueKey('back_to_list'))),
+      const Size(journeyToolbarExtent, journeyToolbarExtent),
+    );
+    final detail = find.byKey(const ValueKey('detail_content_garden'));
+    expect(tester.getRect(detail).top, 0);
+    store
+        .detailScroll(demoPlaces.first, 0)
+        .jumpTo(
+          store.detailScroll(demoPlaces.first, 0).position.maxScrollExtent,
+        );
+    await tester.pumpAndSettle();
+    expect(
+      tester.getRect(find.byKey(const ValueKey('view_saved'))).bottom,
+      lessThan(tester.getRect(tabs).top),
+    );
+    tester.view.viewInsets = FakeViewPadding(
+      bottom: 300 * tester.view.devicePixelRatio,
+    );
+    await tester.pumpAndSettle();
+    expect(tester.getSize(detail).height, 574);
+    await Scrollable.ensureVisible(
+      tester.element(find.byKey(const ValueKey('place_note'))),
+      alignment: 0.35,
+    );
+    await tester.pumpAndSettle();
+    expect(
+      tester.getRect(find.byKey(const ValueKey('place_note'))).bottom,
+      lessThanOrEqualTo(tester.getRect(tabs).top),
+    );
+    store
+        .detailScroll(demoPlaces.first, 0)
+        .jumpTo(
+          store.detailScroll(demoPlaces.first, 0).position.maxScrollExtent,
+        );
+    await tester.pumpAndSettle();
+    expect(
+      tester.getRect(find.byKey(const ValueKey('view_saved'))).bottom,
+      lessThan(tester.getRect(tabs).top),
+    );
+    store.setFixture(Fixture.loadFailure);
+    await tester.pumpAndSettle();
+    final retry = find.byKey(const ValueKey('retry_load'));
+    final recoveryViewport = find.ancestor(
+      of: retry,
+      matching: find.byType(SingleChildScrollView),
+    );
+    expect(tester.getRect(recoveryViewport).top, 0);
+    expect(tester.getSize(recoveryViewport).height, 574);
+    expect(
+      tester.getRect(retry).top,
+      greaterThan(tester.getRect(appBar).bottom),
+    );
+    expect(tester.getRect(retry).bottom, lessThan(tester.getRect(tabs).top));
+    expect(tester.takeException(), isNull);
+  }, variant: TargetPlatformVariant.only(TargetPlatform.iOS));
+
+  testWidgets('saved rows expose their status without relying on the icon', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+
+    await start(tester);
+    await tap(tester, 'place_garden');
+    await tap(tester, 'save_place');
+    await tap(tester, 'back_to_list');
+    final row = find.byKey(const ValueKey('place_garden'));
+    expect(tester.getSemantics(row).label, contains('Saved'));
+    semantics.dispose();
+  });
+
+  testWidgets('wide short detail keeps its secondary panel usable', (
+    tester,
+  ) async {
+    tester.view.physicalSize =
+        const Size(1100, 230) * tester.view.devicePixelRatio;
+    addTearDown(tester.view.resetPhysicalSize);
+    await start(tester);
+    await tap(tester, 'place_garden');
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('discover, save, revisit and edit a note', (tester) async {
     await start(tester);
     await tap(tester, 'place_garden');

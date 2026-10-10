@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Abdullah AlMunaikh's Marionette smoke runner for the local reference app.
+"""Marionette smoke runner for the local reference app.
 
 This exercises deterministic fixture data, not a user's product or live data.
 Run the app on the intended device first, then pass its current VM service URI.

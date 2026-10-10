@@ -1,6 +1,6 @@
 # Dart engineering for Flutter mobile
 
-Abdullah AlMunaikh’s language guide supports reliable interaction and smooth frames.
+This language guide supports reliable interaction and smooth frames.
 
 Design controls intentionally: reuse product components, create suitable custom components, or deliberately theme semantic SDK primitives rather than using unstyled stock Material everywhere. Disable all ink splashes/ripples with `NoSplash.splashFactory` and transparent `splashColor`, audit overrides, and retain meaningful press/focus/selection feedback. Shadows use shared restrained depth tokens only when they clarify hierarchy, following Emil’s cohesion and attention to unseen details. See [theme-patterns.md](theme-patterns.md).
 

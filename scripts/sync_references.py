@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Package declared local reference copies; author: Abdullah AlMunaikh."""
+"""Package declared local reference copies."""
 import argparse
 import json
 from pathlib import Path

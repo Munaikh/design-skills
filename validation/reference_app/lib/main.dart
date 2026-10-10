@@ -20,11 +20,15 @@ Future<void> main() async {
         enableSessionReports: true,
         isInteractiveElement: (element) => switch (element.widget) {
           GlassButton(:final enabled) => enabled,
+          GlassIconButton(:final onPressed) => onPressed != null,
+          GlassMenuItem(:final enabled) => enabled,
           GlassTabBar() => true,
           _ => false,
         },
         extractText: (element) => switch (element.widget) {
           GlassButton(:final label) => label,
+          GlassIconButton(:final semanticLabel) => semanticLabel,
+          GlassMenuItem(:final title) => title,
           _ => null,
         },
       ),

@@ -1,8 +1,8 @@
-# Abdullah AlMunaikh’s Flutter Mobile Design Skills
+# Flutter Mobile Design Skills
 
-A Flutter mobile UX, visual design, and animation skill set modified and maintained by **Abdullah AlMunaikh**, based on [Emil Kowalski’s original skills](https://github.com/emilkowalski/skills). This independent edition retains Emil’s design-engineering principles and MIT attribution while rebuilding the workflows for Flutter iOS and Android apps.
+I’m Abdullah. I adapted [Emil Kowalski’s original skills](https://github.com/emilkowalski/skills) into a Flutter mobile UX, visual design, and animation skill set. I maintain this independent edition, preserving Emil’s design-engineering principles and MIT attribution while rebuilding the workflows for Flutter iOS and Android apps.
 
-Great mobile design helps people finish a task, understand what happened, recover from errors, and keep their work. The suite starts with those goals, then addresses visual hierarchy, purposeful motion, accessible controls, and platform behavior. It does not simply shrink a web interface onto a phone.
+I start with helping people finish a task, understand what happened, recover from errors, and keep their work. Visual hierarchy, purposeful motion, accessible controls, and platform behavior support those goals. Mobile flows need their own design decisions.
 
 ## Four workflows
 
@@ -13,15 +13,15 @@ Great mobile design helps people finish a task, understand what happened, recove
 | [flutter-prototype](skills/flutter-prototype/SKILL.md) | Compare requested design alternatives at the size of the question: a component or a short complete journey |
 | [flutter-ios-swift](skills/flutter-ios-swift/SKILL.md) | Implement Swift plugins, channels, native views, and iOS capabilities used by Flutter |
 
-All four support automatic discovery and explicit invocation. Each folder includes its own reference copies, invocation metadata, and MIT license, so it works independently. Agents read the small entrypoint first and load only relevant references. Humans can use the same reference guides without installing a skill.
+I consolidated the suite into four independently installable workflows. All four support automatic discovery and explicit invocation. Each folder includes its own reference copies, invocation metadata, and MIT license. Agents read the small entrypoint first and load only relevant references; humans can use the same guides without installing a skill.
 
 ## A simple working process
 
-**Understand → design the flow → build → verify.** For substantial work, start with a short user goal, entry point, screen journey, recovery states, and completion criteria in the working response. Small repairs need less ceremony. Follow the app’s existing theme, components, router, backend, and state architecture.
+My workflow is **understand → design the flow → build → verify**. For substantial work, I ask agents to describe the user goal, entry point, screen journey, recovery states, and completion criteria in the working response. Small repairs need less ceremony. The app’s router, backend, and state architecture stay intact while its shared theme and components improve within the requested scope.
 
-Improve navigation and interactions within the requested feature and explain material changes. Seek clarification before changing business rules, removing capabilities, or expanding scope. Ordinary implementation happens in the user’s app; prototypes are for requested exploration, and audits are for requested review.
+I expect agents to improve navigation and interactions within the requested feature and explain material changes. Changes to business rules, capabilities, or scope need clarification. Ordinary implementation happens in the user’s app; prototypes are for requested exploration, and audits are for requested review.
 
-Use platform-appropriate navigation on iOS and Android while preserving shared branding. Design for **phones first, then foldable phones**: keep routes, selection, drafts, and scroll position through folding, unfolding, and resizing; respect hinges and safe areas. Tablet checks remain separately identified. Accessibility, keyboard reachability, recovery, and reduced motion belong in the design from the start.
+I prioritize platform-appropriate navigation on iOS and Android with shared branding, and **phones first, then foldable phones**. Routes, selection, drafts, and scroll position should survive folding, unfolding, and resizing, with hinges and safe areas respected. Tablet checks remain separately identified. Accessibility, keyboard reachability, recovery, and reduced motion belong in the design from the start.
 
 ## Install and use
 
@@ -37,13 +37,15 @@ Use $flutter-ios-swift to implement the iOS boundary for this Flutter plugin.
 
 ## Visual craft
 
-Use **no ink splashes or ripples**. Set `NoSplash.splashFactory` and transparent `splashColor` in the shared light/dark themes, then check component overrides. Keep clear press, focus, selected, and disabled feedback.
+I use **no ink splashes or ripples**. Set `NoSplash.splashFactory` and transparent `splashColor` in the shared light/dark themes, then check component overrides. Keep clear press, focus, selected, and disabled feedback.
 
-Do not use unstyled stock Material for everything. Reuse the product’s design system, build custom components where they serve the task, or deliberately theme semantic framework controls. Shadows follow Emil’s cohesion and invisible-craft principles: restrained shared depth tokens for meaningful floating layers, tuned to their backdrop and light/dark appearance. Spacing, tone, or a border often supplies enough separation. See [theme and control guidance](references/theme-patterns.md).
+I favor the product’s design system, useful custom components, and deliberately themed semantic framework controls. Unstyled stock Material should not define every screen. My shadow guidance adapts Emil’s cohesion and invisible-craft principles: restrained shared depth tokens for meaningful floating layers, tuned to their backdrop and light/dark appearance. Spacing, tone, or a border often supplies enough separation. See [theme and control guidance](references/theme-patterns.md).
+
+I expect visible UI to be inspected in context, including opened menus and matching back/action controls in both themes. My structural surfaces use greyish off-white/off-black; seeded accents should not tint the canvas, cards, and fields. Shape, icon weight, typography, spacing, and state feedback must form a coherent system. I require separate UX and visual evidence, proportional to the affected screens; successful journey tests alone do not establish visual quality.
 
 ## Preferred libraries
 
-Choose dependencies for a concrete need. Use Flutter Animate by default for effect sequences, or simple implicit Flutter widgets such as AnimatedContainer. Use Motor for spring motion and Heroine for shared-element transitions; reserve low-level stock controllers for very complex custom animation mixers. Use Smooth Sheets for sheets and Motion for sensor-driven 3D effects. Preserve the project’s architecture and align coding style with the general-flutter principles summarized in each skill. The [toolkit guide](references/toolkit.md) includes setup, platform and accessibility considerations, and SDK alternatives.
+I choose dependencies for a concrete need. My defaults are Flutter Animate for effect sequences, simple implicit widgets such as AnimatedContainer for local changes, Motor for spring motion, and Heroine for shared-element transitions. Low-level stock controllers are reserved for very complex custom animation mixers. I prefer Smooth Sheets for sheets and Motion for sensor-driven 3D effects, while preserving the project’s architecture and the general-flutter coding principles summarized in each skill. The [toolkit guide](references/toolkit.md) includes setup, platform and accessibility considerations, and SDK alternatives.
 
 | Need | Preferred package |
 | --- | --- |
@@ -67,15 +69,15 @@ Guides cover press feedback, menus, dialogs, sheets, swipes, list reflow, swaps,
 
 ## Testing and the reference app
 
-Use [Marionette MCP](https://github.com/leancodepl/marionette_mcp) to inspect and exercise the actual running Flutter app. The [testing guide](references/marionette-testing.md) covers debug setup, selectors, recovery journeys, device configuration, reports, and the project-local CLI fallback for humans.
+I use [Marionette MCP](https://github.com/leancodepl/marionette_mcp) to inspect and exercise the actual running Flutter app. The [testing guide](references/marionette-testing.md) covers debug setup, selectors, recovery journeys, device configuration, reports, and the project-local CLI fallback for humans.
 
-[Places](validation/reference_app/README.md) is **one separate permanent reference app** in this repository, outside installed skill bundles. Discover a place, open details, save a short note, find it in Saved, and edit it. Controlled local fixtures exercise loading, failure, retry, and empty states. It validates this suite and demonstrates its guidance; agents do not create another mini app for every task.
+I keep [Places](validation/reference_app/README.md) as **one separate permanent reference app**, outside installed skill bundles. Its journey is to discover a place, open details, save a short note, find it in Saved, and edit it. Controlled local fixtures exercise loading, failure, retry, and empty states. I use it to validate the suite and demonstrate its guidance; agents do not create another mini app for every task.
 
 [Package examples](validation/package_examples/README.md) isolate optional dependencies from the reference app. See [VALIDATION.md](VALIDATION.md) for reproducible checks, verified evidence, and checks requiring real devices.
 
 ## Maintain the suite
 
-Edit authoritative guides under `references/`. The [manifest](references/manifest.json) declares which guides each skill needs; ordinary local copies keep installations self-contained. Avoid editing packaged copies directly.
+I maintain authoritative guides under `references/`. The [manifest](references/manifest.json) declares which guides each skill needs; ordinary local copies keep installations self-contained. Edit those guides and synchronize their packaged copies:
 
 ```bash
 python3 scripts/sync_references.py --write
@@ -84,7 +86,7 @@ python3 scripts/validate_suite.py
 python3 scripts/check_examples.py --flutter /path/to/project-pinned/flutter
 ```
 
-The old overlapping skills are consolidated as follows:
+I consolidated the old overlapping skills as follows:
 
 | Previous responsibilities | Current workflow |
 | --- | --- |
@@ -95,6 +97,6 @@ The old overlapping skills are consolidated as follows:
 
 ## Attribution
 
-Original work © 2026 **Emil Kowalski**. Flutter mobile modifications © 2026 **Abdullah AlMunaikh**. Emil’s original principles include purposeful motion, restraint, invisible craft, reviews, prototypes, and realistic stress testing. Abdullah AlMunaikh adapted and consolidated them into mobile UX workflows, preferred Flutter tooling, accessibility, lifecycle and recovery guidance, and executable validation.
+Original work © 2026 **Emil Kowalski**. His principles include purposeful motion, restraint, invisible craft, reviews, prototypes, and realistic stress testing. I adapted and consolidated them into mobile UX workflows, preferred Flutter tooling, accessibility, lifecycle and recovery guidance, and executable validation.
 
-Distributed under the [MIT license](LICENSE), preserved in each skill. Abdullah AlMunaikh’s modified edition preserves the original author’s credit and is independently maintained.
+I maintain this modified edition independently under the [MIT license](LICENSE), preserved in each skill with the original author’s credit and the modification copyright notice.

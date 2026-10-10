@@ -1,6 +1,18 @@
-# Validating Abdullah AlMunaikh’s Flutter mobile edition
+# Validating the Flutter mobile edition
 
 This edition has four independently installable skills. Authoritative reference guides live under `references/`; the manifest declares ordinary packaged copies. Structural checks prove consistency, not design superiority. Runtime smoke tests prove only the observed journeys and conditions.
+
+## Latest verified state
+
+The latest completed checks on 10 October 2026 are:
+
+- All four skill-creator validations, the suite validator, and canonical/packaged reference checks passed.
+- The SDK fixture analyzed **12 unique Dart examples** cleanly and passed **17 tests**.
+- The reference app analyzed cleanly and passed **12 tests**, including rendered glass geometry, full scroll viewport, content-owned clearance, and synthetic keyboard insets.
+- The unchanged preferred-library fixture's latest completed run analyzed cleanly and passed **4 tests**.
+- iOS Marionette checks on iPhone 18 Pro/iOS 27 verified both themes, 48×48 back/menu controls, the 402×874 scroll viewport, fixed chrome after scrolling, and a final action reachable above the tabs. Demo data and media overrides were restored.
+
+Actual software-keyboard movement, Android runtime behavior, physical fold posture, assistive traversal, composited contrast, and sustained performance remain unverified. Local screenshots and logs are intentionally ignored under `validation/reports/`; they are not shipped evidence links. The phase records below explain which checks were run at each stage.
 
 ## Reproduce the checks
 
@@ -38,6 +50,14 @@ python3 scripts/test_reference_journey.py --uri <vm-service-uri> \
 
 The runner reads controls before acting, verifies content postconditions, captures screenshots and runtime logs, and restores fixtures/device overrides. It uses the project-local Marionette CLI when the MCP connection is unavailable. Each CLI invocation has its own server session; the runner preserves step logs and writes one aggregate report. Reports are local artifacts under `validation/reports/` or a supplied output directory, outside installed bundles.
 
+## Revision and blind-trial method
+
+For a skills-only revision, change skill entrypoints, canonical references, packaged copies, and isolated documentation-example checks. Keep the reference app unchanged in that phase; compare its tracked files against the checkpoint before reporting completion. Subsequent authorized implementation trials may change the app.
+
+Validate the neutral theme example in both brightness modes: structural surface roles and component fills remain grayscale without pure white/black, ordinary foreground and muted text meet 4.5:1 on their intended surfaces, and the field focus color meets 3:1. These tests cover declared colors, not translucent glass, every component state, or visual composition.
+
+For an independent blind trial, use a fresh agent with no conversation history, memory lookup, old reports, or defect hints. Give it the current skill, reference app location, and normal implementation task. Evaluate its actual diff and iOS Simulator evidence through Marionette: separate UX outcomes from visual quality, capture open overlays and both themes, and identify untested states. Keep any known-defect evaluator checklist out of the agent brief. Record subsequent evaluator feedback separately; work after that feedback is an informed iteration rather than a fresh blind result.
+
 ## Platform limits
 
 Android runtime testing is not part of this iOS-focused run. Hardware fold posture, actual keyboard movement, interactive/predictive back feel, haptic delivery, VoiceOver/TalkBack traversal, native permission surfaces, and sustained rendering performance require separate evidence from supported devices. The Swift bridge example needs the consuming Flutter iOS module and native tests; the reference app’s iOS host build does not validate every documented bridge.
@@ -46,7 +66,19 @@ Production fonts and Rive/Lottie artwork are product inputs. API analysis, seman
 
 For performance, capture UI/raster timings in profile mode and check feel in release mode on supported physical devices. Record device/refresh rate, workload, missed frames and percentiles. Read-only reviews do not authorize builds or cache writes.
 
-## Verified result
+## Earlier skills-only verification
+
+On 10 October 2026, after the visual-guidance revision, all four skill-creator checks and suite/source-copy checks passed. The isolated SDK fixture analyzed **12 unique Dart examples** cleanly and passed **17 tests**, including the new light/dark neutral-surface and actual text/focus contrast checks. The reference app and package-example app were unchanged from local checkpoint `3b619fa`; no app runtime test or screenshot was produced during this revision. Earlier app results below describe their historical runs, not acceptance of the revised visual guidance.
+
+A fresh read-only agent received only the mobile-design skill, app location, and evaluation scope, with no history, memory lookup, prior reports, or defect hints. It independently identified the seeded/tinted structural surfaces and mixed stock controls inside the iOS glass app bar. It also distinguished source-confirmed issues from unmeasured contrast, uninspected runtime appearance, and inferred recovery/adaptive risks. At that stage, this supported instruction discoverability; implementation quality still required the later app changes and Marionette screenshot checks.
+
+## Glass geometry and viewport followup
+
+The later app followup corrected the 48×44 rendered glass controls by sharing a 48-point toolbar/control extent. It enabled full-size scrolling behind glass chrome and moved clearance into scroll content, with keyboard resizing owned once. All 12 reference-app tests and final analysis passed. Marionette measured 48×48 back/menu controls and a 402×874 viewport in both themes, with the last action fully above the tab bar. The retained local report is `validation/reports/glass-geometry-followup-20261010/REPORT.md`, with screenshots, measurements, restoration, and capture limits. Actual software-keyboard inspection was unavailable after Device Hub computer use was not approved; the synthetic 300-point keyboard-inset regression passed.
+
+The skill correction makes parent constraints, actual rendered geometry, scroll-behind behavior, and content-owned clearance explicit across all four entrypoints and relevant references. Installed package comments about automatic spacers are checked against implementation rather than repeated as a guarantee. Suite/source-copy and all four skill-creator checks passed after this guidance change.
+
+## Initial validation and intermediate checks
 
 On 10 October 2026:
 

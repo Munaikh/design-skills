@@ -1,6 +1,6 @@
 # Swift at the Flutter iOS boundary
 
-Abdullah AlMunaikh’s scoped native companion. This guide is for iOS plugins and integrations owned by a Flutter app.
+This guide is for iOS plugins and integrations owned by a Flutter app.
 
 ## Establish the actual embedding
 

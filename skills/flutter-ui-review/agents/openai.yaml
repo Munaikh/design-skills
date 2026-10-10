@@ -1,6 +1,6 @@
 interface:
   display_name: "Flutter UI Review"
   short_description: "Review mobile UX, accessibility, UI, and motion"
-  default_prompt: "Use $flutter-ui-review from Abdullah AlMunaikh\u2019s edition for this Flutter mobile task."
+  default_prompt: "Use $flutter-ui-review for this Flutter mobile task."
 policy:
   allow_implicit_invocation: true

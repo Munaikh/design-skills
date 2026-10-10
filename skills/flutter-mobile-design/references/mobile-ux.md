@@ -1,6 +1,6 @@
 # Mobile user experience
 
-Abdullah AlMunaikh’s mobile workflow. Design the task and its recovery before choosing visual treatments.
+Design the task and its recovery before choosing visual treatments.
 
 ## A brief proportional to the work
 
@@ -30,7 +30,7 @@ Use `LayoutBuilder` for allocated space and `MediaQuery` for window/insets/displ
 
 For hinges or display cutouts, keep controls and readable content in usable regions. Distinguish a non-occluding fold from an obstructing hinge; partition at display-feature bounds only when necessary. Keep durable state above adaptive layout boundaries so folding, unfolding, rotation, and window resizing do not recreate a draft or reset navigation. Avoid orientation locking as an overflow fix.
 
-Exercise a compact phone, wide unfolded window, occluding hinge, landscape, keyboard open, large text, and RTL. Preserve selection, draft, scroll, and task completion through both directions of the transition. Responsive improvements benefit tablets, but record actual tablet checks separately. Posture-specific tabletop behavior is a product requirement, not an automatic addition.
+For new journeys or adaptive layout changes, exercise a compact phone and the relevant wide unfolded window, occluding hinge, landscape, keyboard, large-text, and RTL conditions on supported targets. Preserve selection, draft, scroll, and task completion through both directions of affected transitions. Scope small repairs to the conditions they can change, and identify unavailable device/posture checks rather than requiring an unrelated full sweep. Responsive improvements benefit tablets, but record actual tablet checks separately. Posture-specific tabletop behavior is a product requirement, not an automatic addition.
 
 ## UX acceptance
 

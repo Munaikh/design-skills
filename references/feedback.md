@@ -1,7 +1,5 @@
 ## Flutter feedback service
 
-Abdullah AlMunaikh’s modified Flutter edition, based on Emil Kowalski’s original skills.
-
 Use one intended feedback host, stable identity, an update/dismiss lifecycle, and durable recovery through the existing Flutter primitive or service. A new custom stack is warranted only when the product requires it. An error, actionable recovery, or operation history must remain available beyond an ephemeral toast.
 
 ### Choose the feedback surface

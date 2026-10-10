@@ -1,6 +1,6 @@
 # Accessible Flutter mobile interaction and recovery
 
-Abdullah AlMunaikh’s acceptance guide for meaningful mobile UI changes. Use the relevant checks for the requested feature; preserve the app’s established controls and accessibility architecture.
+For meaningful mobile UI changes, use the relevant checks for the requested feature; preserve the app’s established controls and accessibility architecture.
 
 ## Meaning is part of the component
 
@@ -15,6 +15,10 @@ Use 48 logical pixels as a useful common minimum tappable area, respecting the t
 Honor system text scaling; do not clamp it globally to conceal overflow. At large text, allow multiline labels, taller controls, wrapping actions, and simpler composition. Test actual platform scaling as well as a controlled `TextScaler.linear(2)` fixture; the latter does not reproduce every nonlinear system setting.
 
 Check meaningful contrast in light, dark, and high-contrast themes over actual backgrounds. Error/success uses wording and recognizable status in addition to hue. Use directional padding and alignment, mirror directional symbols appropriately, and verify mixed RTL/LTR identifiers remain readable and copyable. Critical values cannot disappear into ellipsis with only a pointer tooltip as the reveal path.
+
+Measure actual resolved foreground/background pairs, including hint text, labels, menu items, focused fields, and icons over composited glass. Target at least 4.5:1 for normal text and 3:1 for essential non-text indicators/boundaries against adjacent colors. The 3:1 large-text exception applies only when its size/weight definition genuinely qualifies; do not treat 18 Flutter logical pixels as 18 points. Apply documented inactive/incidental exceptions correctly and do not round a failing ratio up. Record the tested states and color pairs rather than claiming contrast is good from a screenshot. Sources: [text contrast](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html), [non-text contrast](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html).
+
+Contrast compliance and visual hierarchy are separate checks. Quiet neutral card/field fills can establish grouping without every decorative surface boundary needing 3:1; essential boundaries and focus indicators must remain perceivable. Keep structural backgrounds greyish off-white/off-black and use accent/status color purposefully. Avoid harsh dark resting outlines as a substitute for coherent spacing, surface separation, and accessible focus/error treatment.
 
 ## Reduced motion and material preferences
 

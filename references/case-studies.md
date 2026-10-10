@@ -1,7 +1,5 @@
 # Product personality and motion
 
-Abdullah AlMunaikh’s modified Flutter edition, based on Emil Kowalski’s original skills.
-
 These translate the source's examples and cohesion principle into Flutter decisions, not templates to copy. Derive the visual thesis from actual app identity and content. Keep the same motion tokens across related components.
 
 ## Fast repeated productivity

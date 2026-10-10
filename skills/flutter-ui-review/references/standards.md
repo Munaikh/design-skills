@@ -1,8 +1,6 @@
-# Flutter motion review and audit
+# Flutter UX, visual design, and motion review
 
-Abdullah AlMunaikh’s modified Flutter edition, based on Emil Kowalski’s original skills.
-
-Ported from the fork's `review-animations` standards and `improve-animations` audit workflow. The craft bar comes from Emil Kowalski's animation philosophy: motion must feel right, not merely run. Default to flagging evidence of regressions; approval is earned. These standards cover the motion part of a broader UX/UI review. Also inspect the primary journey, navigation, recovery, and accessibility with [mobile UX](mobile-ux.md); do not restrict findings to animation.
+Ported from the fork's `review-animations` standards and `improve-animations` audit workflow. The craft bar comes from Emil Kowalski's design-engineering philosophy: coherent details and motion must serve the person using the app. Default to flagging evidence of regressions; approval is earned. Inspect the primary journey, navigation, recovery, and accessibility with [mobile UX](mobile-ux.md), then evaluate visual design independently; a working journey does not establish a polished interface.
 
 ## Task boundary
 
@@ -17,6 +15,12 @@ Use the [preferred toolkit](toolkit.md): Flutter Animate or simple implicit widg
 ## Control and depth review
 
 Check the shared [theme guidance](theme-patterns.md): no ink splashes/ripples, including local overrides; intentional custom or themed semantic components; visible press/focus/selection/disabled states; and restrained shared shadows that communicate actual hierarchy. Inspect real content in light/dark mode. Unstyled stock Material everywhere and decorative elevation on every card are design-policy findings; rank their impact honestly rather than equating cosmetic inconsistency with blocked task completion.
+
+For visible UI work, inspect the complete affected composition, not only the edited widget. Open every relevant menu/popover/sheet; compare the back control, trailing actions, title alignment, and opened overlay together. Check shared corner shapes, icon family/weight, spacing, typography, field labels, and resting/focused/error/disabled states. A glass app bar containing unrelated Material buttons and a default popup menu still fails platform coherence. Follow [native UI](native-ui.md), including deliberate Android styling rather than applying an Apple appearance everywhere.
+
+Check measured control bounds and parent toolbar constraints, not only requested sizes: a circle compressed into an oval is a layout defect. For a floating glass pattern, verify the scrolled viewport behind the chrome as well as initial/final content clearance. A transparent shell with a body reserved between bars does not satisfy that behavior; edge effects must preserve useful backdrop context and legibility. Inspect actual inset ownership rather than assuming the package inserts spacers.
+
+Structural surfaces must use greyish off-white/off-black neutrals, not pure white/black or an accent-tinted canvas, card, field, or menu. Inspect resolved theme colors and surface tint overlays: a seeded scheme can silently tint all surface roles. Keep accent and semantic colors purposeful. Check both actual contrast and visual separation; a compliant text ratio does not excuse muddy hierarchy. Use [accessibility contrast checks](mobile-accessibility.md). Existing architecture remains a constraint; unfinished theme defaults are not evidence of an approved visual direction.
 
 ## Ten non-negotiable standards
 
@@ -99,7 +103,7 @@ Group the remaining verdict by impact, highest first; omit empty tiers:
 5. **Origin, physicality and cohesion** — wrong anchors or personality, double-exposed crossfades.
 6. **Accessibility** — reduced motion, input support, semantics, focus, and accessible dismissal. Escalate critical accessibility failures above cosmetic findings.
 
-Close with **Block** or **Approve**. Block confirmed feel-breaking regressions, keyboard/high-frequency animation, inappropriate `scale: 0`/ease-in, critical accessibility defects, or avoidable expensive work causing jank. Approve only when those are absent and purpose, budgets, interruptibility, reduced motion, and cohesion hold. State inspection limits separately: code inspection cannot certify real-device feel or performance. Cite verified locations and copy exact values from this reference or the project's tokens, never invent a package call.
+Close with separate **UX**, **Visual design**, and **Motion/accessibility** verdicts, then **Block** or **Approve** for the inspected scope. Use **Not inspected** when evidence is missing; a passing analyzer, widget test, or journey cannot stand in for a visual verdict. Block confirmed feel-breaking regressions, keyboard/high-frequency animation, inappropriate `scale: 0`/ease-in, critical accessibility defects, or avoidable expensive work causing jank. In visual design work, also block unresolved violations of the agreed surface/control policy and explain their concrete impact. Approve only when the applicable standards hold. State inspection limits separately: code inspection cannot certify real-device feel or performance. Cite verified locations and copy exact values from this reference or the project's tokens, never invent a package call.
 
 ## Verification tools and limits
 

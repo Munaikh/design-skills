@@ -1,6 +1,6 @@
 # Flutter Animation Recipes
 
-Start with [motion-patterns.md](motion-patterns.md)'s ordered gate. These are Abdullah AlMunaikh’s Flutter mobile adaptations, chosen by purpose rather than added indiscriminately. Reuse the app's component, theme, route, and motion tokens. The Dart blocks below are independent component/helper examples; their local curve constants demonstrate the exact source values. Move those constants into the shared motion module in a real app. For normal features use Flutter Animate or simple implicit widgets, Motor + Heroine for physics/shared elements, Smooth Sheets for sheets, and Motion for 3D tilt. The SDK-only examples include simple implicit-widget fallbacks and advanced mechanics for genuinely complex custom mixers; they do not override those defaults.
+Start with [motion-patterns.md](motion-patterns.md)'s ordered gate. These are Flutter mobile adaptations, chosen by purpose rather than added indiscriminately. Reuse the app's component, theme, route, and motion tokens. The Dart blocks below are independent component/helper examples; their local curve constants demonstrate the exact source values. Move those constants into the shared motion module in a real app. For normal features use Flutter Animate or simple implicit widgets, Motor + Heroine for physics/shared elements, Smooth Sheets for sheets, and Motion for 3D tilt. The SDK-only examples include simple implicit-widget fallbacks and advanced mechanics for genuinely complex custom mixers; they do not override those defaults.
 
 ## Button press
 
@@ -387,7 +387,7 @@ class RemovableRow extends StatelessWidget {
 }
 ```
 
-The owner deduplicates pending confirmation/submission for the same ID and clears it on cancel. Do not accept a stale completion after a row’s identity or operation changes. This stateless example assumes stable per-ID ownership. `Dismissible` supplies its own gesture behavior; do not claim it implements every custom momentum projection. For a signature swipe-to-commit, use the earlier physics helper with an axis-specific recognizer and test vertical-scroll contention, reversal, cancellation, and signed RTL direction.
+The owner deduplicates pending confirmation/submission for the same ID and clears it on cancel. Do not accept a stale completion after a row’s identity or operation changes. This stateless example assumes stable per-ID ownership. `Dismissible` supplies its own gesture behavior; do not claim it implements every custom momentum projection. For a signature swipe-to-commit, use Motor with an axis-specific recognizer; the earlier SDK physics helper is reserved for a genuinely complex custom mixer whose requirements Motor cannot express. Test vertical-scroll contention, reversal, cancellation, and signed RTL direction.
 
 ## A threshold crossing fires once, with hysteresis
 

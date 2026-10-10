@@ -1,6 +1,6 @@
 # Test mobile journeys with Marionette
 
-Abdullah AlMunaikh’s runtime verification workflow. Use [Marionette MCP](https://github.com/leancodepl/marionette_mcp) as the preferred way to inspect and interact with the actual running Flutter app after feature/UI changes, reproduce bugs, and verify recovery. The reference app is a repository fixture; ordinary projects test their own app directly.
+Use [Marionette MCP](https://github.com/leancodepl/marionette_mcp) as the preferred way to inspect and interact with the actual running Flutter app after feature/UI changes, reproduce bugs, and verify recovery. The reference app is a repository fixture; ordinary projects test their own app directly.
 
 ## Establish the target and prepare only when authorized
 
@@ -18,7 +18,17 @@ Connect using the VM service URI from this app's `flutter run` output. Select th
 
 Inspect `get_interactive_elements` before choosing a selector and after navigation/layout changes. Prefer stable keys, then supported identifiers/text; coordinates are a last resort. Exercise the task's entry, normal path, user-visible completion, back/tab behavior, and relevant interruption/recovery. Inspect the resulting content/state after each meaningful action. A successful tap alone does not prove that saving, navigation, or recovery occurred.
 
+Some composite controls expose an interactive descendant instead of the wrapper label/key. Inspect the actual returned tree and place stable keys on the discoverable control where the installed API allows; do not assume a wrapper key will be forwarded. After a state assertion, wait for the relevant route/overlay transition to finish before capturing its settled appearance. Use bounded waits and re-inspection rather than assuming a fixed delay proves readiness.
+
 For the reference app, browse → detail → enter a note → save → open Saved → edit; separately trigger load/save failure and retry without losing work. For the user's app, use its actual journey and authorized test data. Restore media/fixture overrides after sweeps, preserve user/live data, and disconnect or clean up only the session you own.
+
+## Verify visual craft independently
+
+For visible UI work, capture the affected composition in light and dark modes, with relevant large-text states. Open menus/popovers rather than inspecting only their closed trigger. Compare top-bar back/action controls and the overlay; inspect neutral structural surfaces, field resting/focus/error states, icon/type/shape/spacing coherence, no-splash feedback, and legibility. Record rendered button bounds and inspect parent constraints when shapes look distorted. Capture both initial and scrolled states under floating glass bars, with the last action fully reachable; a static closed-bar screenshot cannot prove viewport extension or correct inset ownership. Successful navigation does not establish a visual pass. Report actual contrast measurements separately from screenshots, and note untested states rather than claiming the whole app passed.
+
+## Later blind skill trials
+
+When testing these instructions, start a fresh agent with no conversation history, memory lookup, earlier trial report, or defect hints. Give it only the current skill, app location, authorized scope, and normal task such as applying the Flutter mobile design skill to the reference app. Keep the skill-edit phase free of app edits; only a subsequent authorized trial changes the app. The agent should identify problems through its own inspection. Capture before/after evidence through Marionette on the declared iOS Simulator and retain relevant regression tests. Afterwards, a separate evaluator compares the diff and evidence against the skill's UX and visual acceptance checks; do not feed that checklist's known defects into the agent's brief.
 
 ## Humans and CLI fallback
 

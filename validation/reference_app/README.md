@@ -1,4 +1,4 @@
-# Places — Abdullah AlMunaikh’s Flutter UX reference app
+# Places — Flutter UX reference app
 
 This is a separate, permanent example for validating the design-skills repository. It stays outside installed skills. It demonstrates a complete mobile journey with deterministic local data: Discover → place details → save a note → Saved → edit the note. It has no live backend; saves survive navigation and resizing within a session, and restart resets the demo.
 
@@ -24,4 +24,4 @@ python3 ../../scripts/test_reference_journey.py --uri <vm-service-uri> --output 
 
 The runner verifies postconditions and writes command evidence plus screenshots. Test on iOS and Android phones. Use `set-device-config` for large text and dark mode; change emulator/window posture separately for folding or hinge checks. Actual screen-reader navigation, keyboard motion, predictive back, haptics, and sustained performance need their own device evidence.
 
-Author: Abdullah AlMunaikh. Repository attribution and MIT license apply.
+Repository attribution and MIT license apply.

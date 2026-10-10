@@ -6,7 +6,7 @@ import sys
 from sync_references import check_or_write
 
 ROOT = Path(__file__).resolve().parents[1]
-AUTHOR = 'Abdullah AlMunaikh'
+AUTHOR = 'Abdullah'
 BAD_SUFFIXES = {'.js', '.jsx', '.ts', '.tsx', '.html', '.css', '.mjs', '.cjs'}
 errors = []
 skills = sorted((ROOT / 'skills').iterdir())
@@ -38,8 +38,10 @@ for folder in skills:
         fail(path, 'Invalid skill name')
     if not re.search(r'^description: .+', fields, re.M):
         fail(path, 'Missing discovery description')
-    if f'  author: {AUTHOR}' not in fields or AUTHOR not in text[front.end():]:
-        fail(path, 'Missing modified-edition attribution')
+    if f'  author: {AUTHOR}' not in fields:
+        fail(path, 'Missing maintainer metadata')
+    if 'Emil Kowalski' not in text[front.end():]:
+        fail(path, 'Missing original-source attribution')
     license_path = folder / 'LICENSE'
     if not license_path.exists() or license_path.read_text() != (ROOT / 'LICENSE').read_text():
         fail(folder, 'Missing or divergent MIT attribution')
@@ -108,6 +110,8 @@ for path in ROOT.rglob('*'):
             continue
         relative = target.split('#')[0]
         resolved = (path.parent / relative).resolve()
+        if resolved.is_relative_to(ROOT / 'validation' / 'reports'):
+            fail(path, f'Local evidence link is not shipped; use a plain local artifact path: {target}')
         if not resolved.exists():
             fail(path, f'Broken local reference: {target}')
         if 'skills' in path.parts:

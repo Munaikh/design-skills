@@ -1,7 +1,5 @@
 ## Find animation opportunities: reject first
 
-Abdullah AlMunaikh’s modified Flutter edition, based on Emil Kowalski’s original skills.
-
 This mode proposes motion; keep source code read-only unless implementation is requested. Restraint is the premise: an interface can already have all the motion it needs. Do not audit existing transitions here unless that is also requested.
 
 Recon the product's personality, target platforms, motion libraries, tokens, interaction frequency, and existing state transitions. Inspect callers and actual seams. Then pass every candidate through four questions in order:

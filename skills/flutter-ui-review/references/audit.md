@@ -1,16 +1,16 @@
 # Mobile UX, UI, and motion audit
 
-Abdullah AlMunaikh’s modified Flutter edition, based on Emil Kowalski’s original skills.
-
 ### 1. Recon
 
-Map Flutter SDK constraints, declared target platforms, motion packages and locked versions, routing, shared theme/motion tokens, controllers, gesture handlers, accessibility paths, and product personality. Build a frequency map and trace the primary user journeys. Inspect entry/completion, back/tab/modal behavior, draft retention, error/retry, and phone/foldable continuity before cosmetic details. Preserve existing conventions.
+Map Flutter SDK constraints, declared target platforms, motion packages and locked versions, routing, shared theme/motion tokens, controllers, gesture handlers, accessibility paths, and product personality. Build a frequency map and trace the primary user journeys. Inspect entry/completion, back/tab/modal behavior, draft retention, error/retry, and phone/foldable continuity. Inspect visual craft as a separate required pass, not an optional reward after functional checks. Preserve architecture and useful conventions; do not assume seed colors or stock controls are an approved design direction.
 
 Search with `rg` for `AnimationController`, `Animated`, `Tween`, `Curve`, `Duration`, `Transform`, `Opacity`, `Hero`, `animate`, `Spring`, `onPan`, `onHorizontalDrag`, `onVerticalDrag`, `disableAnimations`, `accessibleNavigation`, and `Semantics`. Also inspect `splashFactory`, `splashColor`, `InkWell`, `InkResponse`, `ButtonStyle`, `BoxShadow`, and elevation overrides against [theme-patterns.md](theme-patterns.md). Check custom/themed control coherence, retained state feedback, and whether depth clarifies hierarchy. Inspect callers and state lifecycles, not just matching lines. Search `pubspec.yaml` and lockfiles for existing packages before recommending any dependency.
 
+Inspect actual screenshots in both themes and open affected menus, popovers, and sheets. Compare top-bar leading/trailing controls and their overlays as one system. Trace `ColorScheme.fromSeed`, surface/container roles, field/card fills, and surface tint to catch accent leakage into structural backgrounds. Require greyish off-white/off-black neutrals, readable actual contrast, purposeful accent, consistent shapes/icons/type/spacing, and quiet but distinguishable field states. Do not hide a debug menu or remove an action to evade this inspection. Use [native UI](native-ui.md) and [accessibility](mobile-accessibility.md).
+
 ### 2. Audit categories
 
-Include UX/task completion, navigation, forms/recovery, adaptive continuity, and accessibility before the motion categories below. Use [mobile UX](mobile-ux.md).
+Include UX/task completion, navigation, forms/recovery, adaptive continuity, accessibility, and visual composition/control/surface coherence alongside the motion categories below. Use [mobile UX](mobile-ux.md) and [review standards](standards.md).
 
 1. Purpose and frequency.
 2. Easing and duration.
@@ -39,6 +39,8 @@ Re-read every cited location yourself. Reject by-design, duplicate, misattribute
 **HIGH**: feel-breaking response, keyboard/high-frequency motion, verified jank, harmful state/recovery behavior. **MEDIUM**: noticeably wrong origin, restart jumps, missing reduced-motion path. **LOW**: justified polish or token consolidation. These labels do not downgrade an accessibility defect that prevents task completion.
 
 List 2–4 missed opportunities separately only if they survive the gate; zero is valid. For an audit alone, stop after the report. For an audit plus planning request, write the requested plans; if selection was left open, present the reviewable table and let the user choose. In an explicitly noninteractive planning task, default to the top 3–5 by leverage and state the selection. Do not invent a permission checkpoint when the user already selected fixes or authorized execution.
+
+Report UX and visual design verdicts independently, with inspected states and gaps. Visual-policy failures belong in the findings even when task completion succeeds; rank them by actual impact. During authorized implementation, fix in-scope defects proactively without changing business rules, removing capabilities, or replacing the existing architecture. Keep a read-only audit read-only.
 
 ### 4. Self-contained plans
 

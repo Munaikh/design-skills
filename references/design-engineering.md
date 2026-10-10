@@ -1,12 +1,12 @@
 # Flutter mobile design engineering
 
-Abdullah AlMunaikh’s adaptation of Emil Kowalski’s craft principles. Use this reference for screen composition and interaction decisions; [motion-patterns.md](motion-patterns.md) and [recipes.md](recipes.md) cover construction.
+Adapted from Emil Kowalski’s craft principles. Use this reference for screen composition and interaction decisions; [motion-patterns.md](motion-patterns.md) and [recipes.md](recipes.md) cover construction.
 
 ## Craft is a practiced discipline
 
 Taste comes from studying great work, understanding its purpose, and iterating. Inspect actual interactions and constraints. Unseen details compound: good timing, predictable exits, clear labels, stable layouts, and recovery preserve trust. Visual beauty helps when it makes a useful product cohesive.
 
-Choose a visual thesis rooted in the product: calm reading, efficient task completion, expressive media, or playful discovery. Use real content and the existing design system. Do not impose one palette, font, rounded-card grid, or platform aesthetic on every app.
+Choose a visual thesis rooted in the product: calm reading, efficient task completion, expressive media, or playful discovery. Use real content and suitable existing design-system decisions. Keep structural surfaces greyish off-white/off-black as this edition requires; product character comes through deliberate typography, imagery, accent, composition, and behavior rather than a colored canvas or repetitive rounded-card grid.
 
 ## Human needs and principles
 
@@ -27,15 +27,25 @@ Every screen should answer where the person is, what they can do, where they can
 
 Extend the nearest shared theme for semantic colors, type, spacing, radii, elevation, and motion. Connect custom tokens to framework control themes. Derive hierarchy from weight, size, tracking, leading, contrast, and spacing together. Inspect light/dark and high contrast with actual content, including images.
 
+The canvas and structural surface roles stay neutral: no pure white/black, cream backgrounds, or seed-derived green/purple fills on cards, fields, dialogs, and menus. Choose deliberate grey tones and verify the rendered result, including elevation tint and glass compositing. Accent colors serve actions, selection, or emphasis; semantic status colors communicate real state. A technically readable accent tint is not automatically a suitable structural background.
+
 Prefer system typography unless the product chooses another face. Bundle needed font assets and retain their licenses. At large text, reflow the layout rather than shrink the type. Use directional padding and alignment. Let controls grow to fit translated labels; preserve 44 logical-pixel iOS and 48 Android touch targets, with 48 a useful shared floor.
 
 Use whitespace and grouping before adding boxes. A card indicates a meaningful unit, not a default wrapper for every paragraph. Materials explain hierarchy: floating surfaces need contrast over their actual backdrop, a bounded filter if useful, and a solid fallback. A shape decoration and its clip must agree. Use the project’s shape system or supported superellipse primitives.
 
 Design the control language rather than accepting every stock Material default. Use product-specific components or carefully themed semantic primitives. Remove ink splashes/ripples through the shared theme and audit local overrides; preserve immediate pressed feedback, visible focus, selection, cancellation, and disabled behavior.
 
-Shadows are part of that same invisible craft: use a coherent set of restrained depth tokens to explain floating layers, not to decorate every card. Let spacing, tone, or a border do the work when they communicate the hierarchy better. Tune against the actual surface, backdrop, and light/dark theme, and measure expensive effects. This is Abdullah AlMunaikh’s Flutter adaptation of Emil’s cohesion principles, not a numerical shadow formula from the original guide.
+Shadows are part of that same invisible craft: use a coherent set of restrained depth tokens to explain floating layers, not to decorate every card. Let spacing, tone, or a border do the work when they communicate the hierarchy better. Tune against the actual surface, backdrop, and light/dark theme, and measure expensive effects. This is a Flutter adaptation of Emil’s cohesion principles, not a numerical shadow formula from the original guide.
 
 Read [theme-patterns.md](theme-patterns.md) and [component-patterns.md](component-patterns.md) for concrete examples.
+
+## Required visual sweep
+
+For a visible feature, inspect its screen and the controls it reveals before declaring completion. Open menus and sheets; compare back and trailing actions together; inspect field labels, borders, radii, icon weight, typography, alignment, and spacing at actual phone size. Check light/dark and large text, including focused/error states and the actual keyboard. An iOS glass shell does not style a stock Material child or its popup for you.
+
+Preserve business behavior, route ownership, and durable state while fixing visual defects within the requested scope. Existing styling is evidence to inspect, not automatic proof of an approved brand. Read-only review still reports findings rather than editing them. Keep visual and UX acceptance separate: completing a journey cannot excuse mismatched controls or weak surface separation, and an attractive screenshot cannot excuse lost work.
+
+The transferable taste principles are intentional composition, consistent shape/type/icon choices, readable contrast, restrained materials, and attention to small states. Apply them to mobile tasks and constraints; do not import marketing-page structures, arbitrary font rotation, mandatory motion, or simulated design randomization.
 
 ## Motion decision order
 

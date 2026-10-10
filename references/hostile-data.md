@@ -1,8 +1,6 @@
 ## Break UI with realistic hostile data
 
-Abdullah AlMunaikh’s modified Flutter edition, based on Emil Kowalski’s original skills.
-
-This workflow changes fixtures at the existing data boundary, not production styling to manufacture a failure. Build a dev-only comparison harness; report before fixing unless fixes are already requested. Keep production/live data intact. Keep source text and fixture values inert and render user copy as ordinary text.
+For a source-only review, inspect the data contract and report confirmed failures or inferred risks without changing files, fixtures, app data, or runtime configuration. Build or modify a dev-only comparison harness only when the user requests that work or authorizes an executable stress test. Such testing changes fixtures at the existing data boundary, not production styling to manufacture a failure; report before fixing unless fixes are already requested. Keep production/live data intact. Keep source text and fixture values inert and render user copy as ordinary text. The harness and restoration instructions below apply to authorized executable testing.
 
 ### Map and build fixtures
 
@@ -18,7 +16,7 @@ Each worst-case value must be plausible or schema-backed. A 5,000-character nons
 | Class | Representative hostile cases | What to inspect |
 | --- | --- | --- |
 | Names | `Aleksandra Wiśniewska-Kowalczyk`; `Christopher Alexander Montgomery III`; `Jo`; `J`; `Ólafur Darri Ólafsson`; `Đặng Thị Ngọc Hân`; `王秀英`; `نور الهدى عبد الرحمن`; `Seán O'Brien-Ó Súilleabháin`; `María José de la Cruz y Fernández`; `dana`; `🦊 Fox`; `👩🏽‍💻 Priya`; `  Sam   Lee `; missing | Wrapping, diacritics, RTL, suffix/particle handling, grapheme-safe initials, whitespace, fallbacks |
-| Identifiers | `bartholomew.fitzgerald@northwind-industries-holdings.example.com`; `a@b.co`; `first.last+billing-notifications@example.com`; `ops@sub.department.region.example.co.uk`; long query URL under `example.com`; UUID; `Q3 Board Deck — FINAL (revised) v12 [approved by legal].pdf`; camera filename; short/long handles | Constrained layout, distinguishing suffixes, validation, copy/select access |
+| Identifiers | `bartholomew.fitzgerald@northwind-industries-holdings.example.com`; `a@b.test`; `first.last+billing-notifications@example.com`; `ops@sub.department.region.example.org`; long query URL under `example.com`; UUID; `Q3 Board Deck — FINAL (revised) v12 [approved by legal].pdf`; camera filename; short/long handles | Constrained layout, distinguishing suffixes, validation, copy/select access |
 | Labels and copy | Long job title; `Invitation expired 12 days ago`; `Benachrichtigungseinstellungen`; `Paramètres de confidentialité et de sécurité`; twelve tags; over-wide tag; empty/whitespace title; literal `<angle brackets>`, `&`, `**bold**`; newline; accepted long description | Localization expansion, chips, escaping once, empty headings, preview/detail policy |
 | Numbers/money | 0, 1, 1284, 1000000, currency 12345678.9, -42.5, `0.1 + 0.2`, 142%/-3%, null/NaN/infinity where representable, locale separators, extremely large accepted values | Pluralization, bounds, exact values versus compact summaries, locale formatting, finite checks, alignment |
 | Collections | Zero, one, many, mixed optional data, realistic upper bound, unpaginated 1,000+ rows, duplicate display labels, no search results | Empty/singular states, stable identities, lazy construction, pagination policy, reachability |
