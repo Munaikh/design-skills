@@ -1,0 +1,24 @@
+name: flutter_toolkit_examples
+description: Abdullah AlMunaikh's isolated preferred-library examples.
+publish_to: none
+environment:
+  sdk: ^3.13.0
+  flutter: '>=3.47.0'
+dependencies:
+  fl_chart: ^1.2.0
+  flutter:
+    sdk: flutter
+  flutter_animate: ^4.5.2
+  google_fonts: 8.2.1
+  heroine: ^0.7.2
+  ionicons_plus: ^0.2.5
+  lottie: ^3.6.1
+  motion: ^2.0.2
+  motor: ^1.1.0
+  rive: ^0.14.11
+  smooth_sheets: 1.2.1
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+flutter:
+  uses-material-design: true

@@ -1,0 +1,61 @@
+{
+  "author": "Abdullah AlMunaikh",
+  "skills": {
+    "flutter-mobile-design": [
+      "mobile-ux.md",
+      "mobile-accessibility.md",
+      "native-ui.md",
+      "motion-patterns.md",
+      "recipes.md",
+      "toolkit.md",
+      "marionette-testing.md",
+      "design-engineering.md",
+      "theme-patterns.md",
+      "component-patterns.md",
+      "case-studies.md",
+      "feedback.md",
+      "dart-engineering.md",
+      "glossary.md"
+    ],
+    "flutter-ui-review": [
+      "mobile-ux.md",
+      "mobile-accessibility.md",
+      "native-ui.md",
+      "motion-patterns.md",
+      "recipes.md",
+      "toolkit.md",
+      "marionette-testing.md",
+      "standards.md",
+      "audit.md",
+      "plan-template.md",
+      "opportunities.md",
+      "hostile-data.md",
+      "dart-engineering.md",
+      "theme-patterns.md"
+    ],
+    "flutter-prototype": [
+      "mobile-ux.md",
+      "mobile-accessibility.md",
+      "native-ui.md",
+      "motion-patterns.md",
+      "recipes.md",
+      "toolkit.md",
+      "marionette-testing.md",
+      "prototype.md",
+      "design-engineering.md",
+      "theme-patterns.md",
+      "component-patterns.md",
+      "case-studies.md",
+      "feedback.md",
+      "dart-engineering.md"
+    ],
+    "flutter-ios-swift": [
+      "ios-bridge.md",
+      "dart-engineering.md",
+      "mobile-accessibility.md",
+      "marionette-testing.md",
+      "toolkit.md",
+      "theme-patterns.md"
+    ]
+  }
+}

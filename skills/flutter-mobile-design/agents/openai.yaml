@@ -1,0 +1,6 @@
+interface:
+  display_name: "Flutter Mobile Design"
+  short_description: "Build mobile journeys, UI, and purposeful motion"
+  default_prompt: "Use $flutter-mobile-design from Abdullah AlMunaikh\u2019s edition for this Flutter mobile task."
+policy:
+  allow_implicit_invocation: true

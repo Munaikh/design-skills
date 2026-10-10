@@ -1,0 +1,6 @@
+interface:
+  display_name: "Flutter Prototype"
+  short_description: "Compare working mobile components and journeys"
+  default_prompt: "Use $flutter-prototype from Abdullah AlMunaikh\u2019s edition for this Flutter mobile task."
+policy:
+  allow_implicit_invocation: true
