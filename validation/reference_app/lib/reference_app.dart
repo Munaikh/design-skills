@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
+import 'package:native_liquid_glass/native_liquid_glass.dart';
 
 import 'place_store.dart';
 
@@ -75,6 +75,8 @@ class _ReferenceAppState extends State<ReferenceApp> {
         scrolledUnderElevation: 0,
       ),
       popupMenuTheme: PopupMenuThemeData(
+        shape: const RoundedRectangleBorder(borderRadius: corners),
+        elevation: 2,
         color: surface,
         surfaceTintColor: Colors.transparent,
       ),
@@ -150,6 +152,8 @@ class _ReferenceAppState extends State<ReferenceApp> {
 
 // The same geometry sizes the chrome and clears content inside scrollables.
 const journeyToolbarExtent = 48.0;
+// Native tab bar reserves 20 points above its 72-point view for glass overflow.
+const journeyNativeTabExtent = 92.0;
 
 class JourneyScrollInsets extends InheritedWidget {
   const JourneyScrollInsets({
@@ -210,8 +214,6 @@ class _JourneyShellState extends State<JourneyShell> {
     GlobalKey<NavigatorState>(),
   ];
   PlaceStore get store => widget.store;
-  final scenarioMenu = GlassMenuController();
-  bool isScenarioMenuOpen = false;
 
   Widget navigator(int tab) => Navigator(
     key: navigatorKeys[tab],
@@ -240,22 +242,19 @@ class _JourneyShellState extends State<JourneyShell> {
         store.currentDetail?.name ?? (store.tab == 0 ? 'Discover' : 'Saved');
     final backLabel = 'Back to ${store.tab == 0 ? 'Discover' : 'Saved'}';
     void goBack() => navigatorKeys[store.tab].currentState!.pop();
+    final useNativeChrome =
+        isApple && NativeLiquidGlassUtils.supportsLiquidGlass;
     final back = store.currentDetail == null
         ? null
-        : isApple
-        ? GlassIconButton(
-            key: const ValueKey('back_to_list'),
-            semanticLabel: backLabel,
-            size: journeyToolbarExtent,
-            iconSize: 24,
-            onPressed: goBack,
-            icon: const Icon(CupertinoIcons.back),
-          )
         : IconButton(
             key: const ValueKey('back_to_list'),
             tooltip: backLabel,
+            constraints: const BoxConstraints.tightFor(
+              width: journeyToolbarExtent,
+              height: journeyToolbarExtent,
+            ),
             onPressed: goBack,
-            icon: const Icon(Icons.arrow_back),
+            icon: Icon(isApple ? CupertinoIcons.back : Icons.arrow_back),
           );
     String fixtureLabel(Fixture fixture) => switch (fixture) {
       Fixture.demo => 'Reset demo',
@@ -263,59 +262,43 @@ class _JourneyShellState extends State<JourneyShell> {
       Fixture.saveFailure => 'Save failure',
       Fixture.empty => 'Empty places',
     };
+    List<PopupMenuEntry<Fixture>> fixtureItems() => [
+      for (final fixture in Fixture.values)
+        PopupMenuItem(
+          key: ValueKey('fixture_${fixture.name}'),
+          value: fixture,
+          child: Text(fixtureLabel(fixture)),
+        ),
+    ];
+    Future<void> showScenarios() async {
+      final overlay =
+          Overlay.of(context).context.findRenderObject()! as RenderBox;
+      final selected = await showMenu<Fixture>(
+        context: context,
+        semanticLabel: 'Test scenarios',
+        position: RelativeRect.fromLTRB(
+          overlay.size.width - 240,
+          MediaQuery.paddingOf(context).top + journeyToolbarExtent,
+          8,
+          0,
+        ),
+        items: fixtureItems(),
+      );
+      if (mounted && selected != null) store.setFixture(selected);
+    }
+
     final scenarioPicker = !kDebugMode
         ? null
-        : isApple
-        ? GlassMenu(
-            controller: scenarioMenu,
-            onClose: () {
-              if (mounted) setState(() => isScenarioMenuOpen = false);
-            },
-            autoAdjustToScreen: true,
-            menuWidth: 240,
-            morphSpeed: MediaQuery.disableAnimationsOf(context)
-                ? MorphSpeed.instant
-                : MorphSpeed.normal,
-            triggerBuilder: (_, toggle) => GlassIconButton(
-              key: const ValueKey('test_scenarios'),
-              semanticLabel: 'Test scenarios',
-              size: journeyToolbarExtent,
-              iconSize: 24,
-              onPressed: () {
-                setState(() => isScenarioMenuOpen = !scenarioMenu.isOpen);
-                toggle();
-              },
-              icon: const Icon(CupertinoIcons.lab_flask),
-            ),
-            items: [
-              for (final fixture in Fixture.values)
-                GlassMenuItem(
-                  key: ValueKey('fixture_${fixture.name}'),
-                  title: fixtureLabel(fixture),
-                  titleStyle: TextStyle(
-                    fontSize: 17,
-                    height: 1.2,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                  height: 48,
-                  maxLines: 2,
-                  onTap: () => store.setFixture(fixture),
-                ),
-            ],
-          )
         : PopupMenuButton<Fixture>(
             key: const ValueKey('test_scenarios'),
             tooltip: 'Test scenarios',
+            constraints: const BoxConstraints(minWidth: 200),
             onSelected: store.setFixture,
-            itemBuilder: (_) => [
-              for (final fixture in Fixture.values)
-                PopupMenuItem(
-                  key: ValueKey('fixture_${fixture.name}'),
-                  value: fixture,
-                  child: Text(fixtureLabel(fixture)),
-                ),
-            ],
-            icon: const Icon(Icons.science_outlined),
+            itemBuilder: (_) => fixtureItems(),
+            child: const SizedBox.square(
+              dimension: journeyToolbarExtent,
+              child: Icon(Icons.science_outlined),
+            ),
           );
     final body = IndexedStack(
       index: store.tab,
@@ -324,75 +307,104 @@ class _JourneyShellState extends State<JourneyShell> {
           TickerMode(enabled: store.tab == i, child: navigator(i)),
       ],
     );
-    final appleTabs = GlassTabBar.bottom(
-      key: const ValueKey('glass_tabs'),
-      selectedIndex: store.tab,
-      onTabSelected: (tab) {
-        FocusScope.of(context).unfocus();
-        store.selectTab(tab);
-      },
-      tabs: const [
-        GlassTab(icon: Icon(CupertinoIcons.compass), label: 'Discover'),
-        GlassTab(icon: Icon(CupertinoIcons.bookmark), label: 'Saved'),
+    void selectTab(int tab) {
+      FocusScope.of(context).unfocus();
+      store.selectTab(tab);
+    }
+
+    final nativeNavigation = LiquidGlassNavigationBar(
+      key: const ValueKey('native_navigation_bar'),
+      title: title,
+      height: journeyToolbarExtent,
+      brightness: Theme.of(context).brightness,
+      tintColor: Theme.of(context).colorScheme.onSurface,
+      leadingItems: [
+        if (store.currentDetail != null)
+          const LiquidGlassNavBarItem(id: 'back_to_list', label: 'Back'),
       ],
+      trailingItems: [
+        if (kDebugMode)
+          const LiquidGlassNavBarItem(
+            id: 'test_scenarios',
+            label: 'Test scenarios',
+          ),
+      ],
+      onItemTapped: (id) {
+        if (id == 'back_to_list') goBack();
+        if (id == 'test_scenarios') showScenarios();
+      },
     );
-    final shell = isApple
-        ? Material(
-            child: GlassScaffold(
-              extendBody: true,
-              resizeToAvoidBottomInset: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              appBar: GlassAppBar(
-                toolbarHeight: journeyToolbarExtent,
-                title: Text(title),
-                leading: back,
-                actions: [?scenarioPicker],
+    final tabs = useNativeChrome
+        ? LiquidGlassTabBar(
+            key: const ValueKey('native_tabs'),
+            height: journeyNativeTabExtent - 20,
+            currentIndex: store.tab,
+            onTabSelected: selectTab,
+            selectedItemColor: Theme.of(context).colorScheme.primary,
+            items: const [
+              LiquidGlassTabItem(
+                label: 'Discover',
+                icon: NativeLiquidGlassIcon.sfSymbol('safari'),
+                selectedIcon: NativeLiquidGlassIcon.sfSymbol('safari.fill'),
               ),
-              bottomBar: appleTabs,
-              body: JourneyScrollInsets(
-                insets: EdgeInsets.only(
-                  top: MediaQuery.paddingOf(context).top + journeyToolbarExtent,
-                  bottom: appleTabs.preferredSize.height,
-                ),
-                child: Material(type: MaterialType.transparency, child: body),
+              LiquidGlassTabItem(
+                label: 'Saved',
+                icon: NativeLiquidGlassIcon.sfSymbol('bookmark'),
+                selectedIcon: NativeLiquidGlassIcon.sfSymbol('bookmark.fill'),
               ),
-            ),
+            ],
           )
-        : Scaffold(
-            appBar: AppBar(
+        : NavigationBar(
+            key: const ValueKey('fallback_tabs'),
+            selectedIndex: store.tab,
+            onDestinationSelected: selectTab,
+            destinations: const [
+              NavigationDestination(
+                key: ValueKey('tab_discover'),
+                icon: Icon(Icons.explore_outlined),
+                label: 'Discover',
+              ),
+              NavigationDestination(
+                key: ValueKey('tab_saved'),
+                icon: Icon(Icons.bookmark_outline),
+                label: 'Saved',
+              ),
+            ],
+          );
+    final shell = Scaffold(
+      extendBody: isApple,
+      extendBodyBehindAppBar: isApple,
+      resizeToAvoidBottomInset: true,
+      appBar: useNativeChrome
+          ? PreferredSize(
+              preferredSize: const Size.fromHeight(journeyToolbarExtent),
+              child: SafeArea(bottom: false, child: nativeNavigation),
+            )
+          : AppBar(
+              key: const ValueKey('fallback_app_bar'),
+              toolbarHeight: journeyToolbarExtent,
               title: Text(title),
               leading: back,
               actions: [?scenarioPicker],
             ),
-            body: SafeArea(child: body),
-            bottomNavigationBar: NavigationBar(
-              selectedIndex: store.tab,
-              onDestinationSelected: (tab) {
-                FocusScope.of(context).unfocus();
-                store.selectTab(tab);
-              },
-              destinations: const [
-                NavigationDestination(
-                  key: ValueKey('tab_discover'),
-                  icon: Icon(Icons.explore_outlined),
-                  label: 'Discover',
-                ),
-                NavigationDestination(
-                  key: ValueKey('tab_saved'),
-                  icon: Icon(Icons.bookmark_outline),
-                  label: 'Saved',
-                ),
-              ],
-            ),
-          );
+      bottomNavigationBar: tabs,
+      body: isApple
+          ? JourneyScrollInsets(
+              insets: EdgeInsets.only(
+                top: MediaQuery.paddingOf(context).top + journeyToolbarExtent,
+                bottom: useNativeChrome
+                    ? journeyNativeTabExtent
+                    : 80 + MediaQuery.paddingOf(context).bottom,
+              ),
+              child: body,
+            )
+          : SafeArea(child: body),
+    );
     return PopScope(
-      canPop:
-          !isScenarioMenuOpen && store.currentDetail == null && store.tab == 0,
+      canPop: store.currentDetail == null && store.tab == 0,
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
-        if (isScenarioMenuOpen) {
-          scenarioMenu.close();
-        } else if (store.currentDetail != null) {
+        if (store.currentDetail != null) {
           navigatorKeys[store.tab].currentState!.pop();
         } else if (store.tab != 0) {
           store.selectTab(0);

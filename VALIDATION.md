@@ -2,9 +2,20 @@
 
 This edition has four independently installable skills. Authoritative reference guides live under `references/`; the manifest declares ordinary packaged copies. Structural checks prove consistency, not design superiority. Runtime smoke tests prove only the observed journeys and conditions.
 
-## Latest verified state
+## Native UIKit migration — 11 October 2026
 
-The latest completed checks on 10 October 2026 are:
+The four skills, canonical and packaged guides, README, and reference app now use `native_liquid_glass` 0.3.1. Its installed availability check requires iOS 26+, so the app supplies explicit themed Flutter fallbacks on Android and older iOS. Native labelled navigation actions and tabs preserve the existing store and per-tab navigation. The Test scenarios action opens a deliberately themed Flutter popup because the package's standalone native menu does not supply the required trigger accessibility and dismissal contract.
+
+- Suite, source/copy, all four skill-creator checks, and whitespace checks passed.
+- The reference app analyzed cleanly and passed **13 tests**, retaining its previous 12 checks and adding popup-first Back/draft retention. These widget tests exercise Flutter fallbacks; they do not render UIKit controls.
+- The iPhone 18 Pro/iOS 27 Simulator debug build and launch passed, followed by a successful hot restart and final theme hot reload. Native UI automation activated UIKit controls; Marionette checked Flutter content and state. Saving/editing a note, native Saved/Discover selection, native Back, popup dismissal, and both themes were verified. Demo data and media overrides were restored.
+- The scroll viewport measured 402×874, the navigation frame 402×48, and the tab frame 402×92, including the package's 20-point material overflow reserve. Fixed chrome and content-owned clearance held after scrolling; the last action ended at y770 above the tab frame at y782. Full simulator captures include UIKit layers, unlike Flutter-only captures.
+
+Local evidence is retained at `validation/reports/native-liquid-glass-migration-20261011/REPORT.md`. Two initial simulated native taps needed a fresh-snapshot retry. Individual native control bounds, actual keyboard movement, UIKit Dynamic Type, assistive traversal, physical-device feel/performance, and older-iOS runtime remain unverified. App media overrides do not establish native Dynamic Type coverage. The unchanged SDK and preferred-library fixtures were not rerun; their historical results follow below.
+
+## Baseline before the native UIKit migration
+
+These checks were completed on 10 October 2026 before changing the navigation dependency:
 
 - All four skill-creator validations, the suite validator, and canonical/packaged reference checks passed.
 - The SDK fixture analyzed **12 unique Dart examples** cleanly and passed **17 tests**.
@@ -16,7 +27,7 @@ Actual software-keyboard movement, Android runtime behavior, physical fold postu
 
 ## Reproduce the checks
 
-Use the project-pinned Flutter/Dart SDK. The fixtures were validated with Flutter 3.47.7 and Dart 3.13.5 on 10 October 2026.
+Use the project-pinned Flutter/Dart SDK. The baseline fixtures and native reference-app migration were validated with Flutter 3.47.7 and Dart 3.13.5; each phase record identifies its own checks.
 
 ```bash
 python3 scripts/sync_references.py --check
@@ -45,10 +56,12 @@ Marionette tests run against the debug app on an iOS simulator. Use its current 
 
 ```bash
 python3 scripts/test_reference_journey.py --uri <vm-service-uri> \
-  --device "iPhone simulator" --output /tmp/places-journey
+  --device "<actual fallback device>" --output /tmp/places-journey
 ```
 
-The runner reads controls before acting, verifies content postconditions, captures screenshots and runtime logs, and restores fixtures/device overrides. It uses the project-local Marionette CLI when the MCP connection is unavailable. Each CLI invocation has its own server session; the runner preserves step logs and writes one aggregate report. Reports are local artifacts under `validation/reports/` or a supplied output directory, outside installed bundles.
+This Python runner targets the app's Flutter fallback controls, such as Android or an unsupported iOS version. Its preflight rejects detected native chrome before changing fixtures or overrides. On supported iOS, use authorized native UI automation or manual interaction for UIKit navigation/tab items, and Marionette for Flutter content/state assertions. A Flutter wrapper key is not a native control selector; do not claim native control coverage from this runner alone.
+
+The runner reads Flutter controls before acting, verifies content postconditions, captures Flutter screenshots and runtime logs, and restores fixtures/device overrides. It uses the project-local Marionette CLI when the MCP connection is unavailable. Each CLI invocation has its own server session; the runner preserves step logs and writes one aggregate report. Reports are local artifacts under `validation/reports/` or a supplied output directory, outside installed bundles. Native chrome needs full simulator/device screenshots and separately recorded native interaction evidence.
 
 ## Revision and blind-trial method
 
@@ -92,9 +105,13 @@ The later no-splash/custom-control theme update was hot-reloaded successfully an
 
 The final field-theme revision shares one 20-point corner token across fields, cards, and buttons, with filled resting fields and explicit focus/error outlines. Its canonical Dart example and reference app were reanalyzed cleanly and the 16 recipe plus 7 journey tests passed again. The **iPhone 18 Pro/iOS 27** field check passed **17 Marionette steps and 5 screenshots**, inspecting resting Search, resting note, and focused note before restoring Discover without modifying input. Captured logs contained no Flutter exception or overflow. Evidence: `validation/reports/field-theme-smoke-20261010/report.md`; its `05-search-after-submit.png` shows the actual resting Search state. Screenshots do not certify measured contrast, transient ripple behavior, or physical keyboard movement. The rewritten glossary and all four packaged policy guides passed final structure/content/link and source-copy checks.
 
+## Locked fixture versions
+
+This inventory follows the fixture lockfiles. `native_liquid_glass` replaced the earlier navigation dependency on 11 October 2026; the earlier run records above retain their historical scope.
+
 | Package | Resolved fixture version |
 | --- | --- |
-| liquid_glass_widgets | 1.11.1 |
+| native_liquid_glass | 0.3.1 |
 | marionette_flutter / marionette_cli | 0.7.0 |
 | motor | 1.1.0 |
 | flutter_animate | 4.5.2 |

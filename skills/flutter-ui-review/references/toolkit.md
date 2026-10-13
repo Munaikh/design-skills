@@ -6,7 +6,7 @@ Design controls intentionally: reuse product components, create suitable custom 
 
 | Need | Preferred choice | Scope and existing-project guidance |
 | --- | --- | --- |
-| Apple-style app bars, tab bars, toolbars and glass controls | [liquid_glass_widgets](https://pub.dev/packages/liquid_glass_widgets) | Existing Cupertino navigation or a solid, simple platform control |
+| Apple-style app bars, tab bars, toolbars and glass controls | [native_liquid_glass](https://pub.dev/packages/native_liquid_glass) | Existing Cupertino navigation or a solid, simple platform control |
 | Springs, interruptible targets, gesture momentum | [motor](https://pub.dev/packages/motor) | Use Motor for new physics; low-level simulation only for a genuinely complex custom mixer |
 | Coordinated effects and entrances | [flutter_animate](https://pub.dev/packages/flutter_animate) | A simple implicit widget handles a local target; Flutter Animate is the default effect-composition tool |
 | Spring-based shared-element continuity | [heroine](https://pub.dev/packages/heroine) | Use Heroine with Motor-based physics for new shared elements; do not introduce stock Hero |
@@ -20,53 +20,55 @@ Design controls intentionally: reuse product components, create suitable custom 
 
 Package choice follows the user journey. Preserve router, business state, and platform behavior; do not reshape the product to suit a package demo. Illustrations supplement text/status and never provide the sole representation of task completion. Verify assets, errors, cancellation, disposal, reduced motion, and first-frame cost. The SDK recipe library remains a supported fallback.
 
-## Apple-style navigation
+## Native Apple navigation
 
-`liquid_glass_widgets` supplies Flutter-rendered iOS-style surfaces. Use `GlassScaffold` with `GlassAppBar` and `GlassTabBar.bottom` as the primary screen pattern; `GlassToolbar` serves grouped actions. Use the package's sheets, menus, and controls when appropriate. Keep readable content and list rows opaque; glass belongs primarily to the navigation/control layer. On Android preserve Android-appropriate controls and back behavior unless the product explicitly chooses a shared glass treatment.
+Use [native_liquid_glass](https://pub.dev/packages/native_liquid_glass) for iOS navigation/control chrome. It embeds native views through `UiKitView`; `LiquidGlassTabBar` hosts UIKit tabs, `LiquidGlassNavigationBar` hosts a navigation bar, and `LiquidGlassMenu` presents a native menu. Flutter still owns routes, selection, drafts, and content. The package is MIT; inspect the consuming app's pinned version and toolchain before adoption. Verified 0.3.1 requires Dart 3.11 and Flutter 3.41.2 or newer. No package-wide wrapping or initialization layer is required.
 
-Treat the app bar, back control, menu trigger, and opened menu as one component family. Putting `IconButton` or `PopupMenuButton` inside `GlassAppBar` does not make their appearance or overlay glass. Prefer a matching `GlassIconButton` for back/close and `GlassMenu` with a deliberate trigger, or `GlassPullDownButton` with `GlassMenuItem` entries. Verify these APIs against the installed package before implementation. Supply meaningful localized `semanticLabel` values for icon-only controls, consistent hit regions and icon weight, and correct back/dismiss/focus-return behavior. Keep debug/scenario actions available and intentionally styled.
+**Availability:** iOS 26+ provides the glass appearance. Upstream documentation describes ordinary native styling on older iOS, but the verified 0.3.1 Dart widgets gate native view creation on `NativeLiquidGlassUtils.supportsLiquidGlass` and otherwise return an empty `SizedBox`, including older iOS and Android. This getter is synchronous and lazily checks the OS version; there is no public initialization call. Always supply an explicit platform-appropriate fallback when it is false. Do not lower or raise the app's deployment target merely to hide this limitation; verify the actual locked release and test supported older devices.
 
-Inspect the opened overlay, not just its trigger: menu positioning, long labels, selected/disabled rows, safe edges, dismissal, and neutral/legible material over actual content. Wrapper keys or labels may not reach an inner actionable child; inspect the runtime tree and place stable keys on actual controls where the integration allows it. Never replace an accessible control with an unlabeled tap detector to obtain a particular appearance. Provide a coherent solid alternative rather than mixing unrelated bare controls into a glass bar.
+Use `LiquidGlassNavigationBar` with `LiquidGlassNavBarItem` for coordinated leading/trailing actions, `LiquidGlassTabBar` with `LiquidGlassTabItem` for peer destinations, and `LiquidGlassButton` or `.icon` for suitable standalone actions. Icons use `NativeLiquidGlassIcon`; prefer fitting SF Symbols on iOS. Item IDs identify callbacks, not router destinations by themselves. Keep labeled back/close and correct dismissal/focus return; do not rebuild native controls as anonymous Flutter tap regions.
 
-Set all structural surfaces to deliberate greyish off-white/off-black, including scaffolds, cards, fields, menus and solid fallbacks. A seed color or default surface tint must not leak accent into the canvas. Glass can reveal underlying content, so check composited contrast rather than assigning it a nominal background color.
-
-Check the toolbar’s constraints against its children. In installed 1.11.1, `GlassAppBar` defaults to a 44-point `toolbarHeight`; a `GlassIconButton(size: 48)` in that row is constrained to 48×44, so its oval becomes visibly flattened. Coordinate button size and toolbar height through shared geometry, then verify actual rendered width/height and hit bounds. Do not shrink the accessible target merely to hide the mismatch; allow enough toolbar space for the chosen controls and title.
-
-For the floating glass navigation pattern, keep `GlassScaffold(extendBody: true)` so the scroll viewport extends beneath the bars. `false` deliberately confines the body between them and is appropriate only for a specifically chosen non-overlapping layout. Put initial top clearance and final bottom clearance in scroll content padding or slivers; do not wrap the whole scroll viewport in outer bar-sized padding or a redundant `SafeArea`. Clearances depend on the actual bar geometry, safe areas, and keyboard handling, applied once. Verify both initial placement and the scrolled state, including a fully reachable final action and retained scroll position. Choose edge effects for readable chrome without treating a visually empty strip as proof that content is behind glass.
-
-Initialize the actual binding before `LiquidGlassWidgets.initialize()`, then use `LiquidGlassWidgets.wrap()`. For a `MaterialApp`, supply `brightnessResolver: Theme.maybeBrightnessOf` so glass follows the app theme. Keep app-wide glass settings central. `GlassScaffold` manages background, bar placement, and edge effects; verify who owns body-content insets in the installed implementation rather than assuming automatic spacers. In 1.11.1, `extendBody: true` positions the body full-size, but its build path does not insert the top spacer described in its comments; avoid manually stacking repeated filters around glass controls. Nested refractive wrappers can damage rendering and interaction.
-
-The reference app exercises these APIs and journeys; a runnable fixture is not automatic evidence of finished visual craft. Inspect its child controls, opened overlays, and resolved colors against the current guidance. Verify the following names against the installed package:
+The following API outline is not a complete runnable app. Branch to a deliberately themed Android/older-iOS fallback and keep callbacks in the existing state/router layer:
 
 ```text
-WidgetsFlutterBinding.ensureInitialized();
-await LiquidGlassWidgets.initialize();
-runApp(LiquidGlassWidgets.wrap(
-  brightnessResolver: Theme.maybeBrightnessOf,
-  child: const MyApp(),
-));
-
-GlassScaffold(
-  extendBody: true,
-  appBar: GlassAppBar(
-    toolbarHeight: 48, // Match 48-point glass controls when present.
-    title: const Text('Discover'),
-  ),
-  bottomBar: GlassTabBar.bottom(
-    selectedIndex: selectedIndex,
-    onTabSelected: selectTab,
-    tabs: const [
-      GlassTab(icon: Icon(CupertinoIcons.compass), label: 'Discover'),
-      GlassTab(icon: Icon(CupertinoIcons.bookmark), label: 'Saved'),
-    ],
-  ),
-  body: content, // Scroll viewport fills the shell; content owns bar clearance.
+LiquidGlassNavigationBar(
+  title: 'Discover',
+  brightness: Theme.of(context).brightness,
+  leadingItems: const [LiquidGlassNavBarItem(id: 'back', label: 'Back')],
+  onItemTapped: handleNavigationAction,
+)
+LiquidGlassTabBar(
+  items: const [
+    LiquidGlassTabItem(label: 'Discover', icon: NativeLiquidGlassIcon.sfSymbol('compass')),
+    LiquidGlassTabItem(label: 'Saved', icon: NativeLiquidGlassIcon.sfSymbol('bookmark')),
+  ],
+  currentIndex: selectedIndex,
+  onTabSelected: selectTab,
+)
+LiquidGlassMenu(
+  label: 'Actions',
+  items: const [LiquidGlassMenuItem(id: 'save', title: 'Save')],
+  onItemSelected: handleMenuAction,
 )
 ```
 
-With Marionette, initialize `MarionetteBinding` first in debug and the normal Flutter binding otherwise; do not initialize two bindings. Use normal app widgets in unit/widget tests rather than calling the instrumented `main()`.
+### Menus, appearance, and geometry
 
-Check reduced motion, large text, mixed-direction labels, focus/semantics, scroll behind bars, and light/dark/high-contrast appearance. The package approximates reduced transparency using increased contrast; this is not the actual iOS setting. Use a supported native bridge or explicit app preference when exact transparency behavior is needed. Profile shaders and raster work on target devices, provide a legible lower-cost/solid fallback, and do not infer native UIKit hosting or guaranteed frame performance from an iOS-style appearance.
+`LiquidGlassMenu` uses a plain system `UIButton` trigger; its popup is native, but the trigger is **not automatically a matching glass button**. Verified 0.3.1 offers no custom trigger builder. Use at most one native menu trigger per screen because repeated instances interfere with gestures. Where a coherent glass-trigger composition is required, use a verified accessible integration or a deliberate styled fallback rather than placing competing tap layers around the trigger. Preserve debug/scenario actions and inspect both the closed trigger and opened menu. Do not assume an icon-only control has a meaningful native accessibility name: test VoiceOver, use a useful visible label where possible, and verify any native accessibility bridge without duplicating activation or semantics.
+
+The tab bar mirrors `Theme.of(context).brightness`; the navigation bar follows device appearance unless its `brightness` is supplied. Other controls must be checked against native appearance individually. Test app/device theme disagreement as well as matching light/dark modes; a Flutter foreground token does not prove native title/icon contrast. Keep structural Flutter surfaces and fallbacks greyish off-white/off-black; system-driven native material and content imagery are not seed-tinted card backgrounds.
+
+Verify actual platform-view dimensions, hit regions, safe-area ownership, title fit, and large-text layout. Native navigation defaults to 44 logical pixels (96 for a large title), while tab-bar layout includes material overflow beyond its configured height; inspect the selected version rather than sharing one assumed bar height. Keep scrolling content behind chrome in paint order, with initial/final clearance inside scroll content. Use Flutter scaffold extension or a deliberate stack where appropriate; do not put outer bar-sized padding around the viewport and mistake an empty strip for scroll-behind glass. Keep platform views late in paint order and avoid overlapping Flutter decorations above them; those create extra compositing surfaces.
+
+### Overlay ownership and rendering
+
+In verified 0.3.1 the controls observe `ModalRoute.isCurrent` to suppress covered views. An optional `LiquidGlassNavigatorObserver` handles popup routes; inspect existing navigator integration before adding observers, especially nested navigators. Custom overlays and transitions inside the same route need explicit ownership through `NativeLiquidGlassLifecycle.suppressGlassEffects()` / `unsuppressGlassEffects()`. The counter is global and reference-counted: balance each acquired suppression exactly once in `try/finally`, including cancellation, errors, and disposal. Start the protected scope before awaiting suppression because its counter increments before the native call completes. Avoid duplicate manual ownership, unbounded delays, and native-channel calls on unsupported targets; release after the actual overlay/transition lifecycle finishes.
+
+One or two native chrome views per screen is a reasonable starting point, not a performance guarantee. Avoid one per repeated row, profile real-device compositing, and verify overlays cannot paint above or leak behind modal content. Native controls retain system behavior but still need app-level reduced-motion, contrast, large-text, semantics, cancellation, and navigation checks. Screenshots and simulator timings do not establish hardware performance or accessible interaction.
+
+The package also offers sheets and spring helpers; these do **not** replace this edition's Smooth Sheets, Motor, Flutter Animate, Heroine, or Motion defaults. Use them only for a justified native capability within the existing architecture.
+
+Sources: [package documentation](https://pub.dev/packages/native_liquid_glass), [maintainer source](https://github.com/tienanh306201z/native_liquid_glass), and the consuming app's resolved source. Documentation and Dart implementation can disagree; record which version and path established a claim.
 
 ## Sheets that preserve the task
 

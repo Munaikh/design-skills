@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Marionette smoke runner for the local reference app.
 
-This exercises deterministic fixture data, not a user's product or live data.
+This exercises deterministic fixture data through the Flutter fallback chrome,
+not a user's product or live data. Native UIKit navigation on supported iOS
+needs native UI automation or manual interaction combined with Marionette;
+its bar items are not Flutter key selectors.
 Run the app on the intended device first, then pass its current VM service URI.
 Marionette gestures are runtime smoke evidence, not deterministic CI tests.
 """
@@ -31,6 +34,7 @@ class Journey:
         self.images: list[str] = []
         self.before_logs = ""
         self.server_steps: list[str] = []
+        self.started = False
 
     def run(self, *command: str) -> str:
         index = len(self.actions) + 1
@@ -72,7 +76,13 @@ class Journey:
                 print(f"PASS: {name}", flush=True)
                 return screen
             if time.monotonic() > end:
-                raise AssertionError(f"{name}: missing {contents!r}; see {self.actions[-1]['evidence']}")
+                native_hint = (
+                    " Native UIKit bar items require native UI automation; "
+                    "this runner targets Flutter fallback chrome."
+                    if name in {"Control available: test_scenarios", "Control available: back_to_list"}
+                    else ""
+                )
+                raise AssertionError(f"{name}: missing {contents!r}; see {self.actions[-1]['evidence']}.{native_hint}")
             time.sleep(0.3)
 
     def tap(self, key: str, *, scroll: bool = False) -> None:
@@ -101,6 +111,13 @@ class Journey:
         self.images.append(filename)
 
     def scenario(self) -> None:
+        screen = self.inspect()
+        if any(f'Key: "{key}"' in screen for key in ("native_navigation_bar", "native_tabs")):
+            raise RuntimeError(
+                "Native UIKit chrome detected. This runner targets Flutter fallback chrome; "
+                "use native UI automation or manual interaction combined with Marionette."
+            )
+        self.started = True
         self.run("set-device-config", "--reset")
         self.before_logs = self.run("get-logs")
         self.fixture("demo")
@@ -172,16 +189,16 @@ class Journey:
 
     def finish(self, failure: str | None) -> None:
         cleanup_errors = []
-        for command in [("set-device-config", "--reset")]:
+        if self.started:
             try:
-                self.run(*command)
+                self.run("set-device-config", "--reset")
             except Exception as error:
                 cleanup_errors.append(str(error))
-        try:
-            self.fixture("demo")
-            self.expect("Fixture and device overrides restored", 'Key: "place_garden"')
-        except Exception as error:
-            cleanup_errors.append(str(error))
+            try:
+                self.fixture("demo")
+                self.expect("Fixture and device overrides restored", 'Key: "place_garden"')
+            except Exception as error:
+                cleanup_errors.append(str(error))
         if cleanup_errors:
             failure = (failure or "") + " Cleanup: " + "; ".join(cleanup_errors)
         server_lines = len(self.server_steps)
@@ -199,6 +216,7 @@ class Journey:
         report += ["", "Screenshots: " + ", ".join(self.images), "",
                    "➖ Not covered: Android, hardware fold posture, physical gestures/haptics, VoiceOver/TalkBack, native permission UI, performance profiling.",
                    "Text entry uses Marionette's field simulation. It does not validate a physical software keyboard.",
+                   "This runner does not validate UIKit bar-item activation, native popup internals, or native chrome screenshots.",
                    "The report establishes in-memory fixture behavior; it does not assert storage across app restarts."]
         (self.output / "report.md").write_text("\n".join(report) + "\n")
         print(f"Marionette · Discover and save — {verdict}", flush=True)
@@ -212,7 +230,7 @@ def main() -> None:
     parser.add_argument("--uri", required=True, help="Current target app VM service WebSocket URI; not saved in evidence")
     parser.add_argument("--output", required=True, type=Path, help="New evidence directory (must not already exist)")
     parser.add_argument("--dart", default=shutil.which("dart") or "dart", help="Project-compatible Dart executable")
-    parser.add_argument("--device", default="iOS simulator", help="Actual target platform/device for the report")
+    parser.add_argument("--device", default="Flutter fallback target", help="Actual target platform/device for the report")
     args = parser.parse_args()
     if not args.uri.startswith(("ws://", "wss://")):
         parser.error("--uri must be a VM service WebSocket URI")

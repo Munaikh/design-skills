@@ -25,7 +25,18 @@ I prioritize platform-appropriate navigation on iOS and Android with shared bran
 
 ## Install and use
 
-Copy any desired complete folder under `skills/` into your agent’s skill directory, such as `~/.agents/skills/`. Keep `references/`, `agents/`, and `LICENSE` together. Inspect existing installations before replacing them; editing this repository does not install anything globally.
+For local use, I link all four skills into `~/.agents/skills/` so they stay in sync with this checkout:
+
+```bash
+python3 scripts/link_skills.py --write
+python3 scripts/link_skills.py --check
+```
+
+[Codex supports symlinked skill folders](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills). Edits and pulled changes under `skills/` are available through the links automatically, including references, invocation metadata, and licenses. Codex detects skill changes automatically; restart it if an update does not appear.
+
+The [link script](scripts/link_skills.py) checks packaged references and all four destinations before creating links. It can be rerun and preserves unrelated skills; an existing folder or link to another checkout blocks installation without being replaced. Keep this checkout at the same path while it is linked. To move it, remove only its four installed symlinks and rerun the script from the new location.
+
+Use `--dest /path/to/project/.agents/skills` with either command for a project-local installation. For a portable snapshot instead, copy any complete folder under `skills/`, keeping `references/`, `agents/`, and `LICENSE` together; copies need reinstalling after repository updates.
 
 ```text
 Use $flutter-mobile-design to improve this Flutter app’s save-and-return journey.
@@ -49,7 +60,7 @@ I choose dependencies for a concrete need. My defaults are Flutter Animate for e
 
 | Need | Preferred package |
 | --- | --- |
-| Apple-style app bars, tab bars, toolbars, and glass controls | [liquid_glass_widgets](https://pub.dev/packages/liquid_glass_widgets) |
+| Native iOS navigation bars, tab bars, toolbars, and glass controls | [native_liquid_glass](https://pub.dev/packages/native_liquid_glass) |
 | Interruptible springs and physics | [motor](https://pub.dev/packages/motor) |
 | Effect sequences and deliberate entrances | [flutter_animate](https://pub.dev/packages/flutter_animate) |
 | Shared-element continuity (use Heroine rather than the default Hero) | [heroine](https://pub.dev/packages/heroine) |
@@ -61,7 +72,7 @@ I choose dependencies for a concrete need. My defaults are Flutter Animate for e
 | Authored interactive animations | [rive](https://pub.dev/packages/rive) |
 | Exported animation playback | [lottie](https://pub.dev/packages/lottie) |
 
-Motion is published under GPL-3.0; the repository’s MIT license applies to this suite, not its dependencies. Verify dependency licenses for the consuming app. Liquid Glass provides Flutter-rendered Apple-style elements. Adapt Android controls to Android conventions, and check contrast, reduced-motion behavior, and rendering cost. Package versions and APIs must match the consuming project’s SDK.
+Motion is published under GPL-3.0; the repository’s MIT license applies to this suite, not its dependencies. Verify dependency licenses for the consuming app. I use `native_liquid_glass` for real UIKit controls on supported iOS versions, with deliberate Cupertino or themed Android fallbacks when its support check is false. Native platform views have their own compositing, accessibility, theme, and input boundaries; the [toolkit guide](references/toolkit.md) covers those details. Package versions and APIs must match the consuming project’s SDK.
 
 ## Motion and interaction coverage
 
@@ -69,7 +80,7 @@ Guides cover press feedback, menus, dialogs, sheets, swipes, list reflow, swaps,
 
 ## Testing and the reference app
 
-I use [Marionette MCP](https://github.com/leancodepl/marionette_mcp) to inspect and exercise the actual running Flutter app. The [testing guide](references/marionette-testing.md) covers debug setup, selectors, recovery journeys, device configuration, reports, and the project-local CLI fallback for humans.
+I use [Marionette MCP](https://github.com/leancodepl/marionette_mcp) to inspect and exercise the actual running Flutter app. Native UIKit controls also need authorized native UI automation or manual device checks; Flutter widget traversal does not expose their internal buttons. The [testing guide](references/marionette-testing.md) covers this boundary, debug setup, selectors, recovery journeys, device configuration, reports, and the project-local CLI fallback for humans.
 
 I keep [Places](validation/reference_app/README.md) as **one separate permanent reference app**, outside installed skill bundles. Its journey is to discover a place, open details, save a short note, find it in Saved, and edit it. Controlled local fixtures exercise loading, failure, retry, and empty states. I use it to validate the suite and demonstrate its guidance; agents do not create another mini app for every task.
 
@@ -77,12 +88,13 @@ I keep [Places](validation/reference_app/README.md) as **one separate permanent 
 
 ## Maintain the suite
 
-I maintain authoritative guides under `references/`. The [manifest](references/manifest.json) declares which guides each skill needs; ordinary local copies keep installations self-contained. Edit those guides and synchronize their packaged copies:
+I maintain authoritative guides under `references/`. The [manifest](references/manifest.json) declares which guides each skill needs; ordinary local copies keep installations self-contained. After editing those guides, synchronize their packaged copies; linked installations see the updated copies immediately:
 
 ```bash
 python3 scripts/sync_references.py --write
 python3 scripts/sync_references.py --check
 python3 scripts/validate_suite.py
+python3 scripts/link_skills.py --check
 python3 scripts/check_examples.py --flutter /path/to/project-pinned/flutter
 ```
 

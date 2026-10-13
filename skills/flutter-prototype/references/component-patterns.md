@@ -25,11 +25,11 @@ For visible UI work, read this reference and [theme-patterns.md](theme-patterns.
 - Inspect fields empty, filled, focused, invalid, and disabled with the keyboard visible. Keep labels understandable after entry, distinguish hint from label, reserve useful helper/error space, and make focus legible. A harsh resting border or unrelated corner radius is a defect even when validation works.
 - Use a coherent type hierarchy and icon family; do not fix clipping by shrinking accessible text or forcing single-line labels. Read real labels, values, and recovery copy, including long translations.
 
-On iOS, coordinate the back control, menu trigger, and opened menu through the verified glass controls in [toolkit.md](toolkit.md), with a solid fallback. On Android, use deliberately styled controls with Android back/dismiss behavior. Match a platform's interaction language without copying its appearance indiscriminately across platforms.
+On iOS, coordinate the back control, menu trigger, and opened menu through the verified native controls in [toolkit.md](toolkit.md), with an explicit fallback on unsupported targets. `LiquidGlassMenu` has a plain native button trigger and a one-trigger-per-screen limitation; do not assume every native control shares glass styling or wrap it in competing tap layers. On Android, use deliberately styled controls with Android back/dismiss behavior. Match a platform's interaction language without copying its appearance indiscriminately across platforms.
 
 Report visual acceptance separately from journey correctness. Include open overlays, control states, and both themes in runtime evidence; a closed-menu screenshot or passing analyzer cannot prove the menu is finished.
 
-For floating navigation, inspect parent constraints and rendered control dimensions, then scroll under the bars. A declared 48-point circle inside a 44-point toolbar is compressed; a transparent bar above an inset viewport cannot sample scrolling content. Coordinate shared geometry and inset ownership using [native UI](native-ui.md) and [toolkit](toolkit.md), with clearance inside scroll content and no duplicate safe-area padding.
+For floating navigation, inspect parent constraints and rendered control dimensions, then scroll under the bars. A requested square can be compressed by parent constraints; a transparent bar above an inset viewport cannot sample scrolling content. Native platform views also need deliberate paint order and verified overlay suppression. Coordinate shared geometry and inset ownership using [native UI](native-ui.md) and [toolkit](toolkit.md), with clearance inside scroll content and no duplicate safe-area padding.
 
 ## Responsive composition
 
@@ -86,7 +86,7 @@ See [recipes.md](recipes.md) for subtle `0.97` press feedback. No ripple does no
 
 ## Materials and hierarchy
 
-Translucency communicates a functional floating layer over real content. For new Apple-style navigation use the [preferred toolkit](toolkit.md), including `liquid_glass_widgets`; for a justified custom surface use a bounded `ClipRSuperellipse` + `BackdropFilter` + translucent fill; `ImageFiltered` blurs the child itself and is a different effect. Keep contrast across changing backdrops. Heavy structural surfaces and light interactive layers have different material weight; do not stack light translucent surfaces until text loses separation.
+Translucency communicates a functional floating layer over real content. For new Apple-style navigation use the [preferred toolkit](toolkit.md), including `native_liquid_glass`; for a justified custom surface use a bounded `ClipRSuperellipse` + `BackdropFilter` + translucent fill; `ImageFiltered` blurs the child itself and is a different effect. Keep contrast across changing backdrops. Heavy structural surfaces and light interactive layers have different material weight; do not stack light translucent surfaces until text loses separation.
 
 Prefer a solid fallback for high contrast and any app/platform reduced-transparency setting. Flutter's portable `MediaQuery` does not expose a universal reduced-transparency flag; use a project setting or a verified platform bridge, never invent `MediaQuery.reduceTransparencyOf`. Retain a defined border or strong separation where required. Do not use translucency simply because it looks fashionable.
 

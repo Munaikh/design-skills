@@ -9,7 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  liquid_glass_widgets: ^1.11.1
+  native_liquid_glass: ^0.3.1
   marionette_flutter: ^0.7.0
 dev_dependencies:
   flutter_test:
