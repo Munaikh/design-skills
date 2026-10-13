@@ -4,7 +4,7 @@ Start with [motion-patterns.md](motion-patterns.md)'s ordered gate. These are Fl
 
 ## Button press
 
-Use the project's semantic button. When the frequency gate allows pointer press feedback, scale its visual content to `0.97` in 100–150ms; scale the label and icon together. Observe its existing pressed state through `WidgetStatesController` or a project abstraction instead of nesting a competing `GestureDetector` around a functioning button. Restore on cancellation as well as release. Flutter's states-controller documentation warns that notifications may occur during build; defer any listener-driven `setState` appropriately. [Flutter states controller](https://api.flutter.dev/flutter/widgets/WidgetStatesController-class.html)
+Use the project's semantic button. For appropriate pointer press feedback, scale its visual content to `0.97` in 100–150ms; scale the label and icon together. Observe its existing pressed state through `WidgetStatesController` or a project abstraction instead of nesting a competing `GestureDetector` around a functioning button. Restore on cancellation as well as release. Flutter's states-controller documentation warns that notifications may occur during build; defer any listener-driven `setState` appropriately. [Flutter states controller](https://api.flutter.dev/flutter/widgets/WidgetStatesController-class.html)
 
 Keep a stable, sufficiently large hit region outside the scaled visual so shrinkage does not lose the press. Retain native Enter/Space activation, disabled semantics, focus outline, and pointer cancellation. Track pointer-origin activation if adding scale so a keyboard shortcut still follows the no-added-motion gate. Disable ink splashes/ripples through the shared theme and any component overrides; preserve deliberate pressed, hover, and focus feedback. Reduced motion uses the stable visual state with color/contrast feedback.
 
@@ -26,7 +26,7 @@ Expanded image/card pages may use the app's verified draggable-page component. D
 
 ## Retargetable fade with real hidden-state behavior
 
-For a surface that stays mounted and has no need to delay removal until an exit finishes, native `AnimatedOpacity` retargets the fade. This complete wrapper removes unavailable content from hit testing and semantics immediately. Pass `animate: false` for keyboard-origin or frequency-gated changes. Its caller moves focus to a valid destination before hiding focused content; the wrapper cannot guess that destination.
+For a surface that stays mounted and has no need to delay removal until an exit finishes, native `AnimatedOpacity` retargets the fade. This complete wrapper removes unavailable content from hit testing and semantics immediately. Pass `animate: false` for reduced motion or a justified immediate visual change; keyboard activation and focus must never wait for the fade. Its caller moves focus to a valid destination before hiding focused content; the wrapper cannot guess that destination.
 
 ```dart
 import 'package:flutter/widgets.dart';
@@ -170,7 +170,7 @@ Use Flutter Animate or a simple implicit progress presentation for the fill, wit
 
 ## Tab / segmented indicator and clipped active text
 
-Do not slide peer screens to decorate routine tab selection. A tab indicator may move if the frequency gate permits it: use the existing tab/segmented component first, and 250ms strong ease-in-out for occasional selection changes.
+Do not slide peer screens to decorate routine tab selection. Use the native iOS 26+ tab bar for new or redesigned peer navigation and preserve its system selection behavior. This indicator recipe is for custom segmented controls, Android, or an approved older-iOS custom fallback: reuse the existing component first and keep selection feedback brief and interruptible.
 
 For the fork's synchronized text/background technique, paint an active-style copy of the tab labels over the inactive row and clip it to the selected tab's measured rect. `ClipRect` + `CustomClipper<Rect>` is the Flutter equivalent of the inset mask. The active copy is **visual only**, wrapped in `IgnorePointer`, `ExcludeSemantics`, and `ExcludeFocus`; one underlying control tree owns selected state, focus, tap, and keyboard actions. Measure after layout, invalidate on resize/text-scale/locale/direction changes, and interpolate the rect from its current value. Do not use a scale transform that turns pill corners into ovals.
 

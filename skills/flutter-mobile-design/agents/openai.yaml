@@ -1,6 +1,6 @@
 interface:
   display_name: "Flutter UI Implementation"
-  short_description: "Implement an established Flutter design or UI fix"
-  default_prompt: "Use $flutter-mobile-design to implement this established Flutter design or focused UI repair."
+  short_description: "Implement established designs and focused UI fixes"
+  default_prompt: "Use $flutter-mobile-design to implement this established design or repair using the app's existing components."
 policy:
   allow_implicit_invocation: true

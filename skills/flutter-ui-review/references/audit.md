@@ -2,7 +2,7 @@
 
 ### 1. Recon
 
-Map Flutter SDK constraints, declared target platforms, motion packages and locked versions, routing, shared theme/motion tokens, controllers, gesture handlers, accessibility paths, and product personality. Build a frequency map and trace the primary user journeys. Inspect entry/completion, back/tab/modal behavior, draft retention, error/retry, and phone/foldable continuity. Inspect visual craft as a separate required pass, not an optional reward after functional checks. Preserve architecture and useful conventions; do not assume seed colors or stock controls are an approved design direction.
+Map Flutter SDK constraints, declared target platforms, motion packages and locked versions, routing, shared theme/motion tokens, controllers, gesture handlers, accessibility paths, and product personality. Build a frequency map and trace the primary user journeys. Inspect entry/completion, back/tab/modal behavior, draft retention, error/retry, and phone/foldable continuity. Inspect visual craft as a separate required pass, not an optional reward after functional checks. Preserve architecture and existing design-system components unless a feature redesign is requested. Inspect concise copy, microinteraction coverage, and the iOS 26+ native-tab-bar policy as distinct quality criteria.
 
 Search with `rg` for `AnimationController`, `Animated`, `Tween`, `Curve`, `Duration`, `Transform`, `Opacity`, `Hero`, `animate`, `Spring`, `onPan`, `onHorizontalDrag`, `onVerticalDrag`, `disableAnimations`, `accessibleNavigation`, and `Semantics`. Also inspect `splashFactory`, `splashColor`, `InkWell`, `InkResponse`, `ButtonStyle`, `BoxShadow`, and elevation overrides against [theme-patterns.md](theme-patterns.md). Check custom/themed control coherence, retained state feedback, and whether depth clarifies hierarchy. Inspect callers and state lifecycles, not just matching lines. Search `pubspec.yaml` and lockfiles for existing packages before recommending any dependency.
 
@@ -19,7 +19,7 @@ Include UX/task completion, navigation, forms/recovery, adaptive continuity, acc
 5. Rendering performance and rebuild scope.
 6. Accessibility and input modes.
 7. Cohesion and tokens.
-8. Missed opportunities, evaluated through the reject-first gate in [opportunities.md](opportunities.md).
+8. Missed opportunities, evaluated through the feedback and continuity assessment in [opportunities.md](opportunities.md).
 
 For a substantial audit, use read-only agents by category or app area when delegation is authorized by the user or applicable instructions. Each brief includes the absolute path to this reference and category, recon facts, scope/ref, token conventions, frequency assumptions, and a requirement for verified locations plus evidence, no implementation. Respect available concurrency.
 
@@ -36,7 +36,7 @@ Re-read every cited location yourself. Reject by-design, duplicate, misattribute
 | # | Severity | Category | Location | Finding | Fix summary |
 | --- | --- | --- | --- | --- | --- |
 
-**HIGH**: feel-breaking response, keyboard/high-frequency motion, verified jank, harmful state/recovery behavior. **MEDIUM**: noticeably wrong origin, restart jumps, missing reduced-motion path. **LOW**: justified polish or token consolidation. These labels do not downgrade an accessibility defect that prevents task completion.
+**HIGH**: feel-breaking response, motion that delays keyboard/frequent actions, verified jank, harmful state/recovery behavior. **MEDIUM**: noticeably wrong origin, restart jumps, missing reduced-motion path. **LOW**: justified polish or token consolidation. These labels do not downgrade an accessibility defect that prevents task completion.
 
 List 2–4 missed opportunities separately only if they survive the gate; zero is valid. For an audit alone, stop after the report. For an audit plus planning request, write the requested plans; if selection was left open, present the reviewable table and let the user choose. In an explicitly noninteractive planning task, default to the top 3–5 by leverage and state the selection. Do not invent a permission checkpoint when the user already selected fixes or authorized execution.
 

@@ -48,7 +48,7 @@ For journey acceptance, back behavior, forms, and hinge-safe continuity, use [mo
 | --- | --- |
 | Purposeful motion | Movement with a concrete role: acknowledge input, explain a state change, preserve orientation, reveal a relationship, or support a rare expressive moment. “It makes the screen premium” is not a sufficient purpose. |
 | Frequency of use | How often someone encounters the interaction in actual use. Repeated work deserves immediate response and minimal visual interruption; occasional transitions have more room, and rare explanations can justify a larger motion budget. |
-| Restraint | Omitting or reducing treatments whose attention cost exceeds their benefit. Zero added motion is a legitimate crafted result; restraint also applies to cards, shadows, blur, and unnecessary steps. |
+| Restraint | Omitting or reducing treatments whose attention cost exceeds their benefit. Static treatment can be right for a specific interaction or an already adequate system; restraint also applies to cards, shadows, blur, and unnecessary steps. |
 | Cohesion | Agreement between product purpose, language, controls, typography, materials, and motion. It does not require identical animation on every element; deliberate differences can distinguish different roles while preserving one design system. |
 | Invisible craft | Correct handling of details people should not need to notice: stable targets, predictable cancellation, readable labels, retained drafts, useful focus return, and safe resource ownership. Decoration cannot substitute for these details. |
 | Product character | The consistent qualities an experience communicates through its choices, such as clarity, calm, efficiency, or playfulness. Derive them from the product and people using it. This edition requires neutral structural surfaces; distinguish products through fitting accent, imagery, type, composition, and behavior rather than colored canvases or a prescribed bouncy personality. |
@@ -107,7 +107,7 @@ Implement ordinary effects with Flutter Animate by default, or simple implicit w
 | Follow-through | Secondary movement continuing after a primary movement ends. It may convey flexibility or weight, but additional settling must not postpone usable controls or compete with text people read. |
 | Squash and stretch | Deliberate shape deformation suggesting flexibility or impact. It is different from uniform scaling; keep it rare, purposeful, and compatible with readable content and stable hit regions. |
 
-Use shared product motion tokens and the frequency gate. Platform transitions retain their established role. Manual low-level controllers, tween timelines, and simulations are reserved for very complex custom animation mixers that the preferred tools cannot express.
+Use shared product motion tokens and frequency-aware feedback guidance. Platform transitions retain their established role. Manual low-level controllers, tween timelines, and simulations are reserved for very complex custom animation mixers that the preferred tools cannot express.
 
 ## Physics and direct manipulation
 

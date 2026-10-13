@@ -1,6 +1,16 @@
 # Theme foundations
 
-Use this reference when creating or extending the shared visual system. Inspect the existing theme first and correct it in the shared module rather than creating a competing token system. Preserve approved product identity; unfinished seed colors and default control styling are not evidence of an approved design. This edition requires neutral structural surfaces while leaving typography, accent, composition, and purposeful materials responsive to the product.
+Use this reference before building or reviewing visible UI. If the codebase has a design system, use its components, tokens, and established behavior. Redesign those components only when asked to redesign the feature. Implement functional fixes within that system; report aesthetic opportunities outside the requested scope. This suite's new-design defaults do not authorize recoloring or replacing an existing product system.
+
+For new UI without an established system, or an authorized redesign, design for iOS first and adapt the product identity to Android's platform behavior. Use real native iOS tab bars on iOS 26+ where supported, with native Liquid Glass gated to iOS 26+ and custom components for requested older-iOS support; see [toolkit](toolkit.md) for the selection and fallback policy. A custom-component preference never overrides this native-tab-bar rule.
+
+## Experience baseline
+
+Microinteractions are core to a lively experience: responsive press/selection feedback, meaningful completion, and continuity when content changes. Implement the relevant behaviors as part of the feature, not a later polish pass. Preserve immediate actions, interruptibility, and reduced motion. Theme animation and standard page transitions alone do not establish primary-task feedback.
+
+Mobile UI should be direct and self-explanatory. Prefer clear hierarchy, recognizable controls, concise labels, and progressive disclosure to paragraphs explaining the interface. Leave breathing room; do not fill unused space with copy. Preserve necessary recovery, consequences, consent, and accessible labels.
+
+For new visual systems, use neutral structural surfaces while making typography, accent, composition, and purposeful materials responsive to the product. The examples below are foundations, not a finished component system.
 
 ## Neutral surfaces and contextual contrast
 
@@ -12,7 +22,9 @@ Neutral does not mean indistinguishable. Establish hierarchy through spacing, ty
 
 ## Intentional controls, no ink splashes
 
-Do not use unstyled stock Material for every screen and control. Start with the product’s component system; create a custom component when the task, brand, or interaction deserves one. Deliberately themed framework buttons and fields are also valid foundations: retain activation, semantics, cancellation, focus, and disabled behavior while designing their appearance. Custom does not mean a bare `GestureDetector` with a label.
+Raw stock Material appearance is usually suboptimal for a distinctive mobile product, especially an iOS app intended for the App Store. Reuse the existing design system first. For missing components in new UI, create reusable product components with deliberate geometry, density, typography, icons, state styling, and microinteractions. A fill and corner-radius change alone does not establish that system. This is a product-quality preference, not an App Store prohibition on Flutter or Material.
+
+Framework widgets may provide the semantic/input foundation beneath custom components. Retain activation, cancellation, focus, disabled states, text editing, and accessibility; custom does not mean a bare `GestureDetector` with a label. Native iOS chrome remains native. Inspect the control together with its open menu, editor, or dialog, not just its resting appearance.
 
 Use **no ink splash or ripple effects**. Set `ThemeData(splashFactory: NoSplash.splashFactory, splashColor: Colors.transparent)` in both light and dark themes, as in the foundation below. Check nested themes, `InkWell`/`InkResponse`, per-button `ButtonStyle.splashFactory`, and third-party controls for overrides; the root theme cannot disable an independently implemented effect. Configure or replace any ripple that remains.
 

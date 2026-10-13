@@ -1,6 +1,6 @@
 interface:
   display_name: "Flutter Research Design"
   short_description: "Start here: research, design, and build Flutter apps"
-  default_prompt: "Use $flutter-research-design to research relevant Appllama patterns, choose a coherent Flutter design, and build and verify this app."
+  default_prompt: "Use $flutter-research-design to research with Appllama, then design, build, and verify this Flutter app with purposeful microinteractions."
 policy:
   allow_implicit_invocation: true

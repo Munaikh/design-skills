@@ -20,12 +20,12 @@ For visible UI work, inspect the complete affected composition, not only the edi
 
 Check measured control bounds and parent toolbar constraints, not only requested sizes: a circle compressed into an oval is a layout defect. For a floating glass pattern, verify the scrolled viewport behind the chrome as well as initial/final content clearance. A transparent shell with a body reserved between bars does not satisfy that behavior; edge effects must preserve useful backdrop context and legibility. Inspect actual inset ownership rather than assuming the package inserts spacers.
 
-Structural surfaces must use greyish off-white/off-black neutrals, not pure white/black or an accent-tinted canvas, card, field, or menu. Inspect resolved theme colors and surface tint overlays: a seeded scheme can silently tint all surface roles. Keep accent and semantic colors purposeful. Check both actual contrast and visual separation; a compliant text ratio does not excuse muddy hierarchy. Use [accessibility contrast checks](mobile-accessibility.md). Existing architecture remains a constraint; unfinished theme defaults are not evidence of an approved visual direction.
+Structural surfaces must use greyish off-white/off-black neutrals, not pure white/black or an accent-tinted canvas, card, field, or menu. Inspect resolved theme colors and surface tint overlays: a seeded scheme can silently tint all surface roles. Keep accent and semantic colors purposeful. Check both actual contrast and visual separation; a compliant text ratio does not excuse muddy hierarchy. Use [accessibility contrast checks](mobile-accessibility.md). Existing architecture and design-system components remain constraints; redesign components only for an authorized feature redesign. For new UI, inspect raw Material leakage, unnecessary explanatory copy, and native iOS 26+ tab-bar compliance separately from functional correctness.
 
 ## Ten non-negotiable standards
 
 1. **Justified motion.** Name the purpose: spatial consistency, state indication, feedback, explanation, or preventing a jarring change. Decoration on repeatedly used functional UI does not earn a transition.
-2. **Frequency appropriate.** Keyboard-initiated actions and actions used 100+ times/day get no animation. Tens/day gets removal or drastic reduction; occasional gets standard motion; rare/first-time may earn delight. Keyboard focus changes must remain immediate.
+2. **Responsive microinteractions.** Primary actions and content changes need deliberate feedback and continuity. Frequent actions use short, subtle motion; keyboard activation, focus, and typing stay immediate. Flag missing feedback and jarring state changes as well as excessive animation. Existing adequate component behavior and reduced-motion alternatives count; decorative quotas do not.
 3. **Responsive easing.** Entrances and exits start promptly with strong ease-out. Moving an already visible element may use ease-in-out. Ease-in on ordinary interactive UI delays the moment people watch and is a finding. Respect a deliberate native transition with an established platform reason.
 4. **Sub-300ms UI.** Common UI transitions stay below 300ms. Longer explanatory motion, a deliberate hold, or a native sheet/route requires a named reason rather than a silent exception.
 5. **Origin and physical correctness.** Trigger-anchored surfaces scale from the trigger; centered modals stay centered. Never introduce a surface from `scale: 0`; use `0.9–0.97` with a fade when scale earns its place. A pure fade is valid when movement would add no information or for reduced motion; absence of scale alone is not a defect.
@@ -60,13 +60,13 @@ Use the installed Flutter spring API and its actual coordinate units. For a phys
 
 Flag these with evidence and an impact explanation:
 
-- Motion on keyboard commands, command palette open/close, focus jumps, or a 100+/day action.
+- Animation that delays keyboard commands, focus, or frequent actions; missing primary-action feedback or abrupt content changes in new UI.
 - UI ease-in that visibly delays response; an unexplained transition at/above 300ms.
 - A trigger-anchored surface scaling from center, or `scale: 0` entrances.
 - Resetting `AnimationController.value`, repeated `forward(from: 0)`, or identity/key churn that restarts rapidly changing motion.
 - Broad implicit containers animating unrelated decoration/layout changes, a high-level `setState` on every frame, large per-frame allocations, repeated expensive intrinsic layout, or eagerly built enormous animated lists.
 - Unmeasured opacity layers, blur, shadows, shader masks, clipping with `saveLayer`, or excessive repainting that cause or plausibly explain jank. Label a code-only suspicion as a risk, not a measured dropped frame.
-- A movement animation with no reduced-motion path; hover-only actions; keyboard motion; invisible hit targets after opacity reaches zero.
+- A movement animation with no reduced-motion path; hover-only actions; motion that blocks keyboard use; invisible hit targets after opacity reaches zero.
 - Symmetric timing that makes cancellation/system acknowledgment feel as slow as a deliberate hold.
 - Long cascades or entrances that leave controls inaccessible while decoration plays.
 - Gesture thresholds in incorrect units, no fling path, competing horizontal/vertical recognizers, or dismissal that loses in-progress work.
@@ -75,7 +75,7 @@ Not automatic findings: pure fades, all layout animations, every `AnimatedContai
 
 ## Remedial preference hierarchy
 
-1. **Delete** unjustified, high-frequency, or keyboard motion.
+1. **Delete** unjustified decoration or motion that blocks frequent/keyboard actions; retain useful immediate feedback.
 2. **Reduce** duration, amplitude, animated properties, and cascade length.
 3. **Fix easing** using shared responsive curves.
 4. **Fix origin and physicality** using alignment derived from the trigger and restrained transforms.
@@ -91,7 +91,7 @@ Two parts, in this order. The findings table is required even when short; with n
 
 | Before | After | Why |
 | --- | --- | --- |
-| `lib/ui/menu.dart:42`: `Duration(milliseconds: 400)` with `Curves.easeIn` | 200ms with the shared `Cubic(0.23, 1, 0.32, 1)` token on eligible pointer openings; immediate keyboard opening | Removes delayed response and respects the frequency gate |
+| `lib/ui/menu.dart:42`: `Duration(milliseconds: 400)` with `Curves.easeIn` | 200ms with the shared `Cubic(0.23, 1, 0.32, 1)` token on eligible pointer openings; immediate keyboard opening | Removes delayed response and keeps activation immediate |
 | `lib/ui/card.dart:81`: restart at zero on every toggle | Retarget from the current visible value | Rapid reversals must not jump |
 
 Group the remaining verdict by impact, highest first; omit empty tiers:
@@ -103,7 +103,7 @@ Group the remaining verdict by impact, highest first; omit empty tiers:
 5. **Origin, physicality and cohesion** — wrong anchors or personality, double-exposed crossfades.
 6. **Accessibility** — reduced motion, input support, semantics, focus, and accessible dismissal. Escalate critical accessibility failures above cosmetic findings.
 
-Close with separate **UX**, **Visual design**, and **Motion/accessibility** verdicts, then **Block** or **Approve** for the inspected scope. Use **Not inspected** when evidence is missing; a passing analyzer, widget test, or journey cannot stand in for a visual verdict. Block confirmed feel-breaking regressions, keyboard/high-frequency animation, inappropriate `scale: 0`/ease-in, critical accessibility defects, or avoidable expensive work causing jank. In visual design work, also block unresolved violations of the agreed surface/control policy and explain their concrete impact. Approve only when the applicable standards hold. State inspection limits separately: code inspection cannot certify real-device feel or performance. Cite verified locations and copy exact values from this reference or the project's tokens, never invent a package call.
+Close with separate **UX**, **Visual design**, and **Motion/accessibility** verdicts, then **Block** or **Approve** for the inspected scope. Use **Not inspected** when evidence is missing; a passing analyzer, widget test, or journey cannot stand in for a visual verdict. Block confirmed feel-breaking regressions, animation that delays keyboard/frequent actions, inappropriate `scale: 0`/ease-in, critical accessibility defects, or avoidable expensive work causing jank. In visual design work, also block unresolved violations of the agreed surface/control policy and explain their concrete impact. Approve only when the applicable standards hold. State inspection limits separately: code inspection cannot certify real-device feel or performance. Cite verified locations and copy exact values from this reference or the project's tokens, never invent a package call.
 
 ## Verification tools and limits
 

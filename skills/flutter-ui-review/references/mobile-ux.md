@@ -8,6 +8,20 @@ For substantial work, describe: who needs to do what, in which context; how they
 
 Do not simply port web screens into mobile. Preserve the product's purpose while reconsidering steps, information density, navigation, one-handed use, contextual actions, permissions, and keyboard behavior. Desktop navigation, sidebars, large tables, hover discovery, and long forms need mobile-specific decisions. Avoid imposing a single mobile aesthetic or adding onboarding to a task that already works.
 
+## Direct mobile communication
+
+Use less copy. Lead with the task, useful content, and concise action labels. Remove text that merely repeats the title, describes an obvious button, or fills an empty region. Let grouping, affordances, and animated feedback communicate what happened. Empty states usually need only context and one useful next action; add explanation only for a real uncertainty. Keep onboarding brief and skippable where appropriate; demonstrate rather than lecture.
+
+Do not achieve brevity through ambiguous icon-only actions or by hiding recovery, consent, consequences, or required information. Accessible names can be descriptive without adding visible paragraphs. Test whether the journey is understandable without narration from the agent.
+
+## iOS-first, swipe-aware journeys
+
+iOS is the default design target for this suite. Android adapts the same product choices while preserving Android system/predictive back, scroll/input conventions, accessibility, and suitable navigation. Reuse an existing design system unless a feature redesign is requested. For new or redesigned tab navigation, follow the real native iOS tab-bar policy in [toolkit](toolkit.md).
+
+Consider sliding dismissal of appropriate detail screens and sheets, contextual row swipes, and cards that animate into full detail pages. Choose gestures that clarify the journey, not gestures for every surface. Keep a visible back/close/action alternative. Preserve drafts and source scroll position; distinguish dismissing a view from deleting its content. Destructive swipes need recoverability or confirmation appropriate to the consequence.
+
+Drag-driven transitions must track the finger, cancel cleanly, and settle from current position and velocity. Coordinate sheet scrolling, route edge-swipe, horizontal content, and system back; never let a full-screen pan recognizer steal every gesture. Card-to-page continuity must use the existing navigator, stable item identity, and an appropriate reduced-motion path, including when the source card is offscreen or gone on return.
+
 ## Navigation is a product contract
 
 - Define primary destinations, ownership of each tab's stack, drill-down versus temporary modal tasks, entry points/deep links, and the useful destination after completion. Tabs are peers, not steps in a wizard.

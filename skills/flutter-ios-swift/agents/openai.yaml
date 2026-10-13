@@ -1,6 +1,6 @@
 interface:
-  display_name: "Swift for Flutter iOS"
-  short_description: "Build Swift integrations owned by Flutter apps"
-  default_prompt: "Use $flutter-ios-swift to implement this native Swift integration for the Flutter app."
+  display_name: "Flutter Native iOS Integration"
+  short_description: "Build Swift integrations at the Flutter iOS boundary"
+  default_prompt: "Use $flutter-ios-swift to implement this native Swift integration while preserving the Flutter app's state and design system."
 policy:
   allow_implicit_invocation: true

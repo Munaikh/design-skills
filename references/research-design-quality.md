@@ -4,6 +4,9 @@ Adapted from Appllama's app-design principles and this suite's Flutter conventio
 
 ## Make the direction concrete
 
+Reuse an existing design system and redesign its components only when asked to redesign the feature. For a new app, explain the concrete component and interaction decisions, not just adjectives such as clean, neutral, or premium. iOS is the default target; follow [toolkit](toolkit.md) for native iOS 26+ tabs, custom older-iOS support, and the older-OS question for simple apps. Android adapts product identity while preserving its conventions. Keep copy direct and let controls, hierarchy, and microinteractions explain the journey.
+
+
 State the journey and visual direction before implementation: primary task, hierarchy, type roles, neutral surfaces, accent roles, shape/spacing scales, icon family, and the reason it fits this product. Preserve approved branding; an unfinished seed theme is not a design decision. Keep semantic success/warning/error colors distinct from the brand accent. Consistent labels express the same intent. Assets share an intentional palette and illustration language; generate artwork only when it serves the task, and use licensed production assets.
 
 Design substantial new journeys in the requested editable design tool before coding when the user wants design-first delivery. A one-shot implementation request authorizes choosing and implementing the direction without an extra approval stage. Keep a concise design rationale in the response instead of creating an unsolicited design document or prototype app.
@@ -18,7 +21,7 @@ Define loading, empty, success, failure/retry and interrupted states. Keep draft
 
 Use semantic `ColorScheme`/`ThemeExtension` roles and `TextTheme`, appropriate Cupertino/themed controls, actual safe-area and keyboard constraints, and the project's navigation primitives. Use lazy builders/slivers for large lists, stable identity, appropriately sized images, and localized copy/numbers. Do not blindly wrap every screen in a scroll view or replace the app's state layer.
 
-Follow the packaged toolkit: Flutter Animate/implicit widgets for local effects, Motor for interruptible physics, Heroine for shared elements, Smooth Sheets for sheets. Platform navigation remains platform-appropriate. Gate motion by frequency and purpose; preserve gesture position/velocity, interrupted interaction and reduced motion. Do not import another runtime's threading, input or compositing assumptions into Flutter. Profile both UI and raster work when performance is at issue.
+Follow the packaged toolkit: Flutter Animate/implicit widgets for local effects, Motor for interruptible physics, Heroine for shared elements, Smooth Sheets for sheets. Platform navigation remains platform-appropriate. Make microinteractions core and use frequency to tune amplitude and duration; preserve gesture position/velocity, interrupted interaction and reduced motion. Do not import another runtime's threading, input or compositing assumptions into Flutter. Profile both UI and raster work when performance is at issue.
 
 ## Verify the experience
 

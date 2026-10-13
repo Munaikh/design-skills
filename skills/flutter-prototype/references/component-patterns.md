@@ -2,6 +2,12 @@
 
 Read for composition, reusable widgets, adaptive layouts, materials, controls, and typography. Build with the shared theme in [theme-patterns.md](theme-patterns.md). Use the established product language; do not impose an Apple aesthetic on every Flutter app.
 
+## Component choice and identity
+
+Use the codebase's design-system components as-is unless the user asks to redesign the feature. Extend a missing capability consistently; do not replace an existing component because another style seems more attractive. For new UI without a system, compose semantic product components instead of exposing raw Material defaults. Design their density, geometry, type, icons, press/selection response, and opened states together. Keep component APIs semantic and business state outside animation code.
+
+Native iOS tab bars take precedence over custom styling for new or redesigned tab navigation; follow [toolkit](toolkit.md). Consider a tappable card that expands into its detail page and reverses on dismissal, maintaining content identity and route ownership. This is useful continuity, not a requirement to wrap every row in a card.
+
 ## Composition and reusable boundaries
 
 - Start from the primary task, content hierarchy, and current state. One dominant visual idea per screen; each major section gets one job.

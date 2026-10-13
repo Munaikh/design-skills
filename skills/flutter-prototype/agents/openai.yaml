@@ -1,6 +1,6 @@
 interface:
   display_name: "Compare Flutter Designs"
-  short_description: "Compare requested Flutter design alternatives"
-  default_prompt: "Use $flutter-prototype to build and compare the requested Flutter design alternatives."
+  short_description: "Compare explicitly requested design alternatives"
+  default_prompt: "Use $flutter-prototype to build and compare the requested Flutter design alternatives, including their interactions."
 policy:
   allow_implicit_invocation: true

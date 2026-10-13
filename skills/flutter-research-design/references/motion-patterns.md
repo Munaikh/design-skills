@@ -1,21 +1,23 @@
 # Motion Patterns
 
-Motion is a construction decision, not a coat of polish. Run the sequence in order; the first two steps may correctly produce no animation. Make the call, explain it in one line, and implement it. Do not present a menu of motion options.
+Microinteractions are a core part of the experience, not optional polish. Implement meaningful animated response and continuity in the primary journey while preserving immediate actions and reduced motion. An animation package in the dependency list, theme transitions, progress dots, or default route transitions alone do not satisfy this requirement.
 
-This motion framework retains purposeful motion, precise ingredients, interruption, spatial consistency, and physical response. Flutter tickers and widget work run through the UI isolate and raster pipeline.
+This motion framework retains precise ingredients, interruption, spatial consistency, and physical response. Flutter tickers and widget work run through the UI isolate and raster pipeline.
 
-## 1. Frequency gate
+## 1. Cover interactions, then scale motion by frequency
+
+Before implementing new or changed interactive UI, identify applicable press/release/cancel feedback, selection/completion, content insertion/removal/reflow, expansion, onboarding changes, and navigation/dismissal continuity. Keep this brief in the working response, not a new repository report. Reuse established component behavior; redesign it only when the feature redesign is requested. A narrow bug fix need not invent effects outside its scope.
 
 | Frequency | Decision |
 | --- | --- |
-| 100+ times/day: command palette, shortcuts, routine toggles | No added animation. Preserve platform behavior and stop here. |
-| Tens of times/day: press feedback, row selection, list navigation | Near-imperceptible feedback, under 150ms, or nothing. |
-| Occasional: sheets, modals, toasts | Standard, short animation. |
-| Rare / first-time: onboarding, success, celebration | The delight budget lives here. |
+| Very frequent: routine toggles, selection, repeated actions | Immediate action with short, subtle, interruptible feedback; no blocking choreography or celebratory replay. |
+| Frequent: presses, list updates, navigation | Responsive feedback and useful continuity; press feedback normally 100–150ms. |
+| Occasional: sheets, modals, expanded details | Short transitions that communicate origin, destination, and dismissal. |
+| Rare / first-time: onboarding, milestones | More expressive motion when useful; keep skip and primary actions available. |
 
-Keyboard-initiated actions are a disqualifier for added decorative motion. Never delay a shortcut, focus movement, or typing. Tabs are peers: do not add hierarchical slide transitions to routine tab switches. Preserve a product's intentional swipeable `TabBarView` or platform navigation rather than disabling established interaction indiscriminately.
+Frequency limits amplitude and duration; it is not a blanket ban on animation. Keyboard activation, focus movement, typing, and business operations remain immediate, while nonblocking state feedback may animate. Tabs are peers: animate selection appropriately, not a hierarchical page slide. Preserve a product's intentional swipeable tabs and native navigation.
 
-If the request fails the gate, say which part and provide the instant state change or static affordance. Zero animation code is a successful outcome.
+Static treatment is valid for a specific justified interaction, reduced motion, or an already adequate design system. State the reason where relevant. Do not use this exception to omit all meaningful feedback and state continuity from a new app. Adding scale to every button is not the goal: coordinated color, shape, checkmark, selection, and layout changes can make the product feel alive.
 
 ## 2. Name the purpose
 
@@ -77,7 +79,7 @@ abstract final class MotionTokens {
 | Moving / morphing on screen | Strong ease-in-out; typically 200–250ms. |
 | Hover / color | `color`; pointer-only styling, subtle and fast. |
 | Constant progress | Linear. Progress must not ease. |
-| Touch press | 100–150ms and scale `0.97`, only if the gate allows it. |
+| Touch press | 100–150ms; subtle scale such as `0.97` when appropriate, or a deliberate color/shape response. |
 | Modal / sheet | Usually 200–300ms, or a velocity-aware spring; preserve route defaults. |
 | Onboarding explanation | Can be longer when needed to explain. |
 
@@ -122,6 +124,9 @@ Haptics and sound must be causal, harmonious, and useful. `HapticFeedback.select
 
 ## 8. Lifecycle and validation
 
+Validate at least the affected primary action and content transition at normal speed, including rapid reversal, drag cancellation, and reduced motion. For card-to-page continuity, check forward and reverse paths, source identity/scroll restoration, and a missing or offscreen source. For sliding dismissal, check unsaved work, scroll/edge-gesture conflicts, and visible close/back alternatives. Record temporarily when motion needs inspection; screenshots and settled widget tests cannot prove motion quality. Report unavailable runtime checks honestly.
+
+
 Create controllers once in `initState`, update configuration in `didUpdateWidget`, dispose owned controllers/listeners, and use `vsync`. Do not allocate tickers in `build`. Handle `TickerCanceled` when awaiting `.orCancel`, and check mounted before unrelated asynchronous UI updates. `TickerMode` silences tick callbacks while time still advances; it is not an app-wide pause policy. Pause nonessential loops when routes are covered or the app is inactive. Rebuilds, provider refreshes, virtualization, and orientation changes must not restart entrances. [Flutter controller lifecycle](https://api.flutter.dev/flutter/animation/AnimationController-class.html)
 
 Use the project-pinned SDK to format changed Dart code, run static analysis, and run relevant behavioral tests. Select checks for the affected motion, gesture, lifecycle, and supported input paths: rapid reversal, interrupted exits, scroll-vs-drag ownership, pointer cancellation, keyboard activation, focus restoration, system Back, reduced motion, high contrast, large text, RTL, and safe areas. New gesture or navigation behavior needs its full relevant interaction coverage; a local appearance repair does not require unrelated gesture tests. Test behavior, not an implementation-shaped list of curve literals.
@@ -132,7 +137,7 @@ For new gesture motion, measured performance repairs, or expensive effects, use 
 
 | Never | Instead |
 | --- | --- |
-| Decorative animation on shortcuts / 100+ per-day actions | Instant state, platform default. |
+| Blocking or repetitive decoration on frequent actions | Immediate activation with brief, interruptible state feedback. |
 | Scale-zero entrance / ease-in UI | Scale `0.95` + fade / exact strong ease-out. |
 | Handwritten controller/tween composition for ordinary effects | Flutter Animate or a simple implicit widget. |
 | Introducing stock Hero for new shared elements | Heroine with Motor-based physics. |
@@ -146,4 +151,4 @@ For new gesture motion, measured performance repairs, or expensive effects, use 
 | Moving invisibly interactive or duplicate semantic controls | Explicit hit-test/semantics/focus policy. |
 | Haptics as the only feedback | Visible state, one causal haptic. |
 
-Use [recipes.md](recipes.md) for concrete component construction. Deliver code followed by the gate result, ingredients, and the precise device feel-check still needed. Do not claim unperformed validation.
+Use [recipes.md](recipes.md) for concrete component construction. Deliver code with a concise account of implemented interaction feedback, justified static cases, and the precise device feel-check still needed. Do not claim unperformed validation.

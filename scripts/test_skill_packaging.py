@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Exercise portable packaging, drift detection and non-destructive installation."""
 import shutil
+import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -45,6 +47,25 @@ class PackagingTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('license notice', result.stdout)
 
+    def test_motion_guide_cannot_be_dropped_from_bundle_and_manifest(self):
+        # Even internally consistent packaging must retain the core guide.
+        manifest_path = self.root / 'references/manifest.json'
+        manifest = json.loads(manifest_path.read_text())
+        manifest['skills']['flutter-research-design'].remove('motion-patterns.md')
+        manifest_path.write_text(json.dumps(manifest))
+        (self.root / 'skills/flutter-research-design/references/motion-patterns.md').unlink()
+        result = self.run_script('validate_suite.py')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Missing independently packaged policy guide: motion-patterns.md', result.stdout)
+
+    def test_core_guidance_must_be_reachable_from_entrypoint(self):
+        path = self.root / 'skills/flutter-mobile-design/SKILL.md'
+        path.write_text(re.sub(r'\[([^\]]+)\]\(references/mobile-ux\.md\)',
+                               r'\1', path.read_text()))
+        result = self.run_script('validate_suite.py')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Missing required guidance link: mobile-ux.md', result.stdout)
+
     def test_generated_evidence_cannot_ship(self):
         folder = self.root / 'skills/flutter-research-design/research'
         folder.mkdir()
@@ -52,6 +73,19 @@ class PackagingTests(unittest.TestCase):
         result = self.run_script('validate_suite.py')
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('must not ship', result.stdout)
+
+    def test_generated_app_launchers_are_not_skill_content(self):
+        for directory in ('validation/apps/to_do/web', 'validation/reference_app/web'):
+            folder = self.root / directory
+            folder.mkdir(parents=True)
+            (folder / 'index.html').write_text('<html></html>')
+        result = self.run_script('validate_suite.py')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        # The exclusion must not weaken checks inside portable skill bundles.
+        (self.root / 'skills/flutter-research-design/index.html').write_text('<html></html>')
+        result = self.run_script('validate_suite.py')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Foreign-platform source file', result.stdout)
 
     def test_install_is_idempotent_and_preserves_conflicts(self):
         destination = Path(self.temp.name) / 'installed'

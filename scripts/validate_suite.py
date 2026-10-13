@@ -66,24 +66,24 @@ for folder in skills:
             fail(meta, 'Short description must be 25–64 characters')
     if 'allow_implicit_invocation: true' not in metadata:
         fail(meta, 'All workflows must support task discovery')
-    # Keep shared implementation and visual policies discoverable in every bundle.
-    policy_terms = (
-        'Flutter Animate by default', 'AnimatedContainer', 'Motor', 'Heroine',
-        'do not introduce stock Hero', 'Smooth Sheets', 'Motion',
-        'very complex custom animation mixers',
-        '(references/dart-engineering.md)', '(references/toolkit.md)',
-        'no ink splashes or ripples', 'NoSplash.splashFactory',
-        'unstyled stock Material', 'shadows restrained',
-        '(references/theme-patterns.md)',
-    )
-    for term in policy_terms:
-        if term not in text:
-            fail(path, f'Missing shared implementation policy: {term}')
-    for name in ('dart-engineering.md', 'toolkit.md', 'theme-patterns.md'):
+    # Check access to canonical guidance, not repeated policy wording.
+    # These structural checks cannot establish an agent's design quality.
+    required_guides = {'dart-engineering.md', 'toolkit.md', 'theme-patterns.md'}
+    if folder.name != 'flutter-ios-swift':
+        required_guides.update({'motion-patterns.md', 'mobile-ux.md'})
+    linked_guides = set(re.findall(r'\]\(references/([^)#]+)(?:#[^)]*)?\)', text))
+    for name in sorted(required_guides):
+        if name not in linked_guides:
+            fail(path, f'Missing required guidance link: {name}')
         if not (folder / 'references' / name).is_file():
             fail(folder, f'Missing independently packaged policy guide: {name}')
 
 for path in ROOT.rglob('*'):
+    relative = path.relative_to(ROOT)
+    # User-generated app trials are not distributed skill content. Flutter
+    # scaffolds can legitimately contain other platform launchers and assets.
+    if relative.parts[:2] in {('validation', 'apps'), ('validation', 'reference_app')}:
+        continue
     if any(part in {'.git', '.dart_tool', 'build', 'Pods', '.symlinks', '.marionette', '.idea', '__pycache__', 'reports'} for part in path.parts) or not path.is_file():
         continue
     if path.suffix in BAD_SUFFIXES:

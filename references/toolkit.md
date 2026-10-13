@@ -6,7 +6,7 @@ Design controls intentionally: reuse product components, create suitable custom 
 
 | Need | Preferred choice | Scope and existing-project guidance |
 | --- | --- | --- |
-| Apple-style app bars, tab bars, toolbars and glass controls | [native_liquid_glass](https://pub.dev/packages/native_liquid_glass) | Existing Cupertino navigation or a solid, simple platform control |
+| Native iOS 26+ app bars, tab bars, toolbars and glass controls | [native_liquid_glass](https://pub.dev/packages/native_liquid_glass) | Gate to iOS 26+ and verified package support; custom product components for approved older-iOS support |
 | Springs, interruptible targets, gesture momentum | [motor](https://pub.dev/packages/motor) | Use Motor for new physics; low-level simulation only for a genuinely complex custom mixer |
 | Coordinated effects and entrances | [flutter_animate](https://pub.dev/packages/flutter_animate) | A simple implicit widget handles a local target; Flutter Animate is the default effect-composition tool |
 | Spring-based shared-element continuity | [heroine](https://pub.dev/packages/heroine) | Use Heroine with Motor-based physics for new shared elements; do not introduce stock Hero |
@@ -20,15 +20,27 @@ Design controls intentionally: reuse product components, create suitable custom 
 
 Package choice follows the user journey. Preserve router, business state, and platform behavior; do not reshape the product to suit a package demo. Illustrations supplement text/status and never provide the sole representation of task completion. Verify assets, errors, cancellation, disposal, reduced motion, and first-frame cost. The SDK recipe library remains a supported fallback.
 
+## Platform and component precedence
+
+Reuse the app's existing design-system components and behavior. Only redesign them when asked to redesign the feature. For new UI without that system, default to iOS and adapt to Android; native iOS chrome and custom product content serve different purposes.
+
+For new or redesigned tab navigation on iOS 26 or newer, always use a real native iOS tab bar where supported. Prefer an existing native integration, then the verified `native_liquid_glass` tab bar. Do not substitute Material navigation or a custom icon row for convenience or novelty unless instructed otherwise. Native Liquid Glass is allowed only on iOS 26+; require both the OS/platform condition and the installed package's availability check. Never render native Liquid Glass on older iOS or Android. This rule does not authorize replacing an existing design-system tab bar during an unrelated fix.
+
+On iOS below 26, use custom product components when older-OS support is requested, not default Material or Cupertino chrome and not a simulated Liquid Glass shell. Reuse the existing design system outside requested redesigns. Android uses its own branch with the same product identity and Android back/input/accessibility conventions.
+
+For a simple new app with no declared support matrix, state an iOS 26+ design assumption and ask how older iOS should behave: support it with custom components, or intentionally target iOS 26+ only. Continue independent iOS 26+ work while waiting, but do not implement a guessed older-OS fallback or change deployment targets without the answer. If unanswered, report older-OS behavior as unresolved; do not claim it is supported. Existing projects retain their declared support range, and a previously supplied answer remains authoritative. If native integration is unavailable on an otherwise supported iOS 26+ target, report the concrete limitation and get direction before substituting custom or Material tab navigation.
+
+Preserve each tab's stack, selection, scroll, accessibility labels, and safe-area ownership. Never let unsupported native widgets silently remove navigation.
+
 ## Native Apple navigation
 
-Use [native_liquid_glass](https://pub.dev/packages/native_liquid_glass) for iOS navigation/control chrome. It embeds native views through `UiKitView`; `LiquidGlassTabBar` hosts UIKit tabs, `LiquidGlassNavigationBar` hosts a navigation bar, and `LiquidGlassMenu` presents a native menu. Flutter still owns routes, selection, drafts, and content. The package is MIT; inspect the consuming app's pinned version and toolchain before adoption. Verified 0.3.1 requires Dart 3.11 and Flutter 3.41.2 or newer. No package-wide wrapping or initialization layer is required.
+Use [native_liquid_glass](https://pub.dev/packages/native_liquid_glass) for iOS 26+ navigation/control chrome only. It embeds native views through `UiKitView`; `LiquidGlassTabBar` hosts UIKit tabs, `LiquidGlassNavigationBar` hosts a navigation bar, and `LiquidGlassMenu` presents a native menu. Flutter still owns routes, selection, drafts, and content. The package is MIT; inspect the consuming app's pinned version and toolchain before adoption. Verified 0.3.1 requires Dart 3.11 and Flutter 3.41.2 or newer. No package-wide wrapping or initialization layer is required.
 
-**Availability:** iOS 26+ provides the glass appearance. Upstream documentation describes ordinary native styling on older iOS, but the verified 0.3.1 Dart widgets gate native view creation on `NativeLiquidGlassUtils.supportsLiquidGlass` and otherwise return an empty `SizedBox`, including older iOS and Android. This getter is synchronous and lazily checks the OS version; there is no public initialization call. Always supply an explicit platform-appropriate fallback when it is false. Do not lower or raise the app's deployment target merely to hide this limitation; verify the actual locked release and test supported older devices.
+**Availability:** iOS 26+ provides the glass appearance. Upstream documentation describes ordinary native styling on older iOS, but the verified 0.3.1 Dart widgets gate native view creation on `NativeLiquidGlassUtils.supportsLiquidGlass` and otherwise return an empty `SizedBox`, including older iOS and Android. This getter is synchronous and lazily checks the OS version; there is no public initialization call. For declared supported targets where it is false, supply the custom product-component path chosen under the policy above. For a new app with undecided older-OS support, keep that choice pending instead of guessing a fallback. Do not lower or raise the app's deployment target merely to hide this limitation; verify the actual locked release and test supported older devices.
 
 Use `LiquidGlassNavigationBar` with `LiquidGlassNavBarItem` for coordinated leading/trailing actions, `LiquidGlassTabBar` with `LiquidGlassTabItem` for peer destinations, and `LiquidGlassButton` or `.icon` for suitable standalone actions. Icons use `NativeLiquidGlassIcon`; prefer fitting SF Symbols on iOS. Item IDs identify callbacks, not router destinations by themselves. Keep labeled back/close and correct dismissal/focus return; do not rebuild native controls as anonymous Flutter tap regions.
 
-The following API outline is not a complete runnable app. Branch to a deliberately themed Android/older-iOS fallback and keep callbacks in the existing state/router layer:
+The following API outline is not a complete runnable app. Branch to custom product components on Android and on older iOS when that support has been decided and keep callbacks in the existing state/router layer:
 
 ```text
 LiquidGlassNavigationBar(
