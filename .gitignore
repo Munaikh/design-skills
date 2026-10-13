@@ -7,3 +7,8 @@ build/
 *.iml
 .flutter-plugins-dependencies
 validation/reports/
+
+# Transient design research and runtime evidence (keep outside repo by default)
+.design-evidence/
+.research-cache/
+validation/apps

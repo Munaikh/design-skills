@@ -1,7 +1,0 @@
-# Abdullah AlMunaikh's mobile reference follows the standard Flutter lint set.
-include: package:flutter_lints/flutter.yaml
-analyzer:
-  exclude:
-    - build/**
-    - android/**
-    - ios/**

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Read-only checks for independently installable Flutter mobile skills."""
 from pathlib import Path
+import json
 import re
 import sys
 from sync_references import check_or_write
@@ -10,9 +11,9 @@ AUTHOR = 'Abdullah'
 BAD_SUFFIXES = {'.js', '.jsx', '.ts', '.tsx', '.html', '.css', '.mjs', '.cjs'}
 errors = []
 skills = sorted((ROOT / 'skills').iterdir())
-expected = {'flutter-mobile-design', 'flutter-ui-review', 'flutter-prototype', 'flutter-ios-swift'}
+expected = set(json.loads((ROOT / 'references/manifest.json').read_text())['skills'])
 if {p.name for p in skills} != expected:
-    errors.append('Skill catalog must contain exactly the four declared workflows')
+    errors.append('Skill catalog must match the manifest workflows')
 errors.extend(check_or_write())
 
 def fail(path, message):
@@ -22,6 +23,9 @@ for folder in skills:
     if not folder.is_dir():
         fail(folder, 'Unexpected file in skill catalog')
         continue
+    for artifact in folder.rglob('*'):
+        if any(part in {'research', 'reports', '.marionette', '.design-evidence', '.research-cache'} for part in artifact.relative_to(folder).parts):
+            fail(artifact, 'Generated research/runtime evidence must not ship in skill bundles')
     path = folder / 'SKILL.md'
     if not path.exists():
         fail(folder, 'Missing SKILL.md')
@@ -45,6 +49,10 @@ for folder in skills:
     license_path = folder / 'LICENSE'
     if not license_path.exists() or license_path.read_text() != (ROOT / 'LICENSE').read_text():
         fail(folder, 'Missing or divergent MIT attribution')
+    if folder.name == 'flutter-research-design':
+        notice = folder / 'LICENSE-Appllama'
+        if not notice.is_file() or notice.read_bytes() != (ROOT / 'LICENSE-Appllama').read_bytes():
+            fail(folder, 'Missing Appllama upstream license notice')
     meta = folder / 'agents/openai.yaml'
     metadata = ''
     if not meta.exists():

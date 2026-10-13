@@ -38,3 +38,7 @@ Reviews, audits, and proposals are read-only by default, including build/cache/i
 Trace entry → task → completion, including back, tabs, dismissal, permission denial, offline/retry, and interrupted input where applicable. Prioritize blocked tasks, lost work, unreachable recovery, and accessibility defects above polish. Check phone and foldable continuity, large text, RTL, keyboard clearance, and both target-platform conventions. Separate measured failures, observed interaction problems, and code-inferred risks.
 
 For a review return **Before / After / Why**, with verified locations and a clear proposed/implemented distinction, then an impact-ordered verdict and **Block** or **Approve**. No findings means no actionable issue was confirmed within the inspected scope; it does not certify untested device behavior. Audit, opportunity, and stress modes retain their reference-specific output contracts.
+
+## Evidence storage
+
+Follow [evidence policy](references/evidence-policy.md): temporary captures, automatic session reports off, and concise results in chat. Save durable reports only when requested.

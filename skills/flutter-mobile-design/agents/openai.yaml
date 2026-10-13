@@ -1,6 +1,6 @@
 interface:
-  display_name: "Flutter Mobile Design"
-  short_description: "Build mobile journeys, UI, and purposeful motion"
-  default_prompt: "Use $flutter-mobile-design for this Flutter mobile task."
+  display_name: "Flutter UI Implementation"
+  short_description: "Implement an established Flutter design or UI fix"
+  default_prompt: "Use $flutter-mobile-design to implement this established Flutter design or focused UI repair."
 policy:
   allow_implicit_invocation: true

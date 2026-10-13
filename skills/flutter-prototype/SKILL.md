@@ -29,3 +29,7 @@ Default to three meaningfully different directions, each named by its actual des
 For visible variants, read [components](references/component-patterns.md) before implementing. Load [design engineering](references/design-engineering.md), [motion](references/motion-patterns.md), matching [recipes](references/recipes.md), [feedback](references/feedback.md), [accessibility](references/mobile-accessibility.md), [platform behavior](references/native-ui.md), and [toolkit](references/toolkit.md) only as needed. [Case studies](references/case-studies.md) support product-specific personality.
 
 Use [Marionette](references/marionette-testing.md) to exercise runnable variants when available. Return **# / Variant / Axis / When it wins / Cost**, entrypoint/running target, actual checks, and unverified limits. Let the user choose unless a direction was already selected. `riff` explores around a direction; `keep` integrates it using production conventions and removes the harness unless retention was requested.
+
+## Evidence storage
+
+Follow [evidence policy](references/evidence-policy.md): temporary captures, automatic session reports off, and concise results in chat. Save durable reports only when requested.

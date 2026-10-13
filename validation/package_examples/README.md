@@ -1,6 +1,6 @@
 # Preferred-library examples
 
-This isolated package checks composition against the committed dependency lock without adding optional libraries to the Places app. It demonstrates Motor spring interruption, Flutter Animate sequences, Heroine registration/tags, offline Google Fonts policy, Ionicons, accessible FL Chart summaries, Lottie completion fallback, owned Rive loaders, Smooth Sheets note editing, and optional Motion device tilt. Liquid Glass is exercised in the reference app.
+This isolated package checks composition against the committed dependency lock without adding optional libraries to a generated reference app. It demonstrates Motor spring interruption, Flutter Animate sequences, Heroine registration/tags, offline Google Fonts policy, Ionicons, accessible FL Chart summaries, Lottie completion fallback, owned Rive loaders, Smooth Sheets note editing, and optional Motion device tilt. Validate Liquid Glass in a generated app when it is used.
 
 ```bash
 flutter pub get

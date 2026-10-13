@@ -25,3 +25,7 @@ Read [ios-bridge.md](references/ios-bridge.md). Inspect the Flutter embedding, p
 Use typed bridge contracts, main-thread UI interactions, explicit async/cancellation ownership, exactly-once replies, and domain error mapping. Preserve the app’s registration and lifecycle model rather than replacing it with a standalone native app.
 
 Run relevant Dart boundary tests and the project’s iOS build/native tests when available. State unavailable signing, runtime, device, or platform-module checks honestly. Do not silently upgrade Swift language settings or adopt unreleased syntax.
+
+## Evidence storage
+
+Follow [evidence policy](references/evidence-policy.md): temporary captures, automatic session reports off, and concise results in chat. Save durable reports only when requested.

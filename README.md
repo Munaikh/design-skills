@@ -4,20 +4,27 @@ I’m Abdullah. I adapted [Emil Kowalski’s original skills](https://github.com
 
 I start with helping people finish a task, understand what happened, recover from errors, and keep their work. Visual hierarchy, purposeful motion, accessible controls, and platform behavior support those goals. Mobile flows need their own design decisions.
 
-## Four workflows
+## Start here
 
-| Skill | When to use it |
+Use **[flutter-research-design](skills/flutter-research-design/SKILL.md)** for a new app, a redesign, or “make this experience better.” It combines Appllama research and app-design principles with my Flutter conventions, then carries the task through implementation and runtime verification. You do not need to choose and invoke several skills.
+
+| Your task | Skill |
 | --- | --- |
-| [flutter-mobile-design](skills/flutter-mobile-design/SKILL.md) | Build or improve mobile journeys, screens, components, typography, feedback, and animation |
-| [flutter-ui-review](skills/flutter-ui-review/SKILL.md) | Review UX and UI, navigation, accessibility, motion, recovery, performance, or hostile data; audit and improve when requested |
-| [flutter-prototype](skills/flutter-prototype/SKILL.md) | Compare requested design alternatives at the size of the question: a component or a short complete journey |
-| [flutter-ios-swift](skills/flutter-ios-swift/SKILL.md) | Implement Swift plugins, channels, native views, and iOS capabilities used by Flutter |
+| Research, choose a direction, design or build an app/journey | **flutter-research-design** |
+| Implement an established design or make a focused UI repair | [flutter-mobile-design](skills/flutter-mobile-design/SKILL.md) |
+| Review an existing experience or diff | [flutter-ui-review](skills/flutter-ui-review/SKILL.md) |
+| Explicitly compare alternative designs | [flutter-prototype](skills/flutter-prototype/SKILL.md) |
+| Work on Flutter's native Swift integration | [flutter-ios-swift](skills/flutter-ios-swift/SKILL.md) |
 
-I consolidated the suite into four independently installable workflows. All four support automatic discovery and explicit invocation. Each folder includes its own reference copies, invocation metadata, and MIT license. Agents read the small entrypoint first and load only relevant references; humans can use the same guides without installing a skill.
+All five are independently installable and support automatic discovery and explicit invocation. The new workflow packages its Flutter and research guidance, so the original Appllama skills do not need to be loaded alongside it. Live research requires the separately connected Appllama MCP; unavailable research is reported honestly.
+
+## Evidence without repository bloat
+
+Research media, screenshots, recordings and diagnostic logs go in task-scoped temporary storage. Automatic Marionette reports are off by default. Routine decisions and verification results stay in chat. Save a compact artifact only when requested; do not create per-screen research files or append-only run histories. Product source/assets and meaningful regression tests remain versioned. See [evidence policy](references/evidence-policy.md).
 
 ## A simple working process
 
-My workflow is **understand → design the flow → build → verify**. For substantial work, I ask agents to describe the user goal, entry point, screen journey, recovery states, and completion criteria in the working response. Small repairs need less ceremony. The app’s router, backend, and state architecture stay intact while its shared theme and components improve within the requested scope.
+My workflow is **understand → research → choose a direction → build → verify**. For substantial work, I ask agents to describe the user goal, entry point, screen journey, recovery states, and completion criteria in the working response. Small repairs need less ceremony. The app’s router, backend, and state architecture stay intact while its shared theme and components improve within the requested scope.
 
 I expect agents to improve navigation and interactions within the requested feature and explain material changes. Changes to business rules, capabilities, or scope need clarification. Ordinary implementation happens in the user’s app; prototypes are for requested exploration, and audits are for requested review.
 
@@ -25,7 +32,7 @@ I prioritize platform-appropriate navigation on iOS and Android with shared bran
 
 ## Install and use
 
-For local use, I link all four skills into `~/.agents/skills/` so they stay in sync with this checkout:
+For local use, I link all five skills into `~/.agents/skills/` so they stay in sync with this checkout:
 
 ```bash
 python3 scripts/link_skills.py --write
@@ -34,12 +41,12 @@ python3 scripts/link_skills.py --check
 
 [Codex supports symlinked skill folders](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills). Edits and pulled changes under `skills/` are available through the links automatically, including references, invocation metadata, and licenses. Codex detects skill changes automatically; restart it if an update does not appear.
 
-The [link script](scripts/link_skills.py) checks packaged references and all four destinations before creating links. It can be rerun and preserves unrelated skills; an existing folder or link to another checkout blocks installation without being replaced. Keep this checkout at the same path while it is linked. To move it, remove only its four installed symlinks and rerun the script from the new location.
+The [link script](scripts/link_skills.py) checks packaged references and all declared destinations before creating links. It can be rerun and preserves unrelated skills; an existing folder or link to another checkout blocks installation without being replaced. Keep this checkout at the same path while it is linked. To move it, remove only its installed symlinks and rerun the script from the new location.
 
-Use `--dest /path/to/project/.agents/skills` with either command for a project-local installation. For a portable snapshot instead, copy any complete folder under `skills/`, keeping `references/`, `agents/`, and `LICENSE` together; copies need reinstalling after repository updates.
+Use `--dest /path/to/project/.agents/skills` with either command for a project-local installation. For a portable snapshot instead, copy any complete folder under `skills/`, keeping `references/`, `agents/`, and all `LICENSE*` files together; copies need reinstalling after repository updates.
 
 ```text
-Use $flutter-mobile-design to improve this Flutter app’s save-and-return journey.
+Use $flutter-research-design to research and improve this Flutter app’s save-and-return journey.
 Use $flutter-mobile-design to fix the sheet’s interrupted drag and velocity handoff.
 Use $flutter-ui-review to review this diff read-only for UX, accessibility, and motion.
 Use $flutter-prototype to compare two ways to complete this booking flow.
@@ -82,7 +89,7 @@ Guides cover press feedback, menus, dialogs, sheets, swipes, list reflow, swaps,
 
 I use [Marionette MCP](https://github.com/leancodepl/marionette_mcp) to inspect and exercise the actual running Flutter app. Native UIKit controls also need authorized native UI automation or manual device checks; Flutter widget traversal does not expose their internal buttons. The [testing guide](references/marionette-testing.md) covers this boundary, debug setup, selectors, recovery journeys, device configuration, reports, and the project-local CLI fallback for humans.
 
-I keep [Places](validation/reference_app/README.md) as **one separate permanent reference app**, outside installed skill bundles. Its journey is to discover a place, open details, save a short note, find it in Saved, and edit it. Controlled local fixtures exercise loading, failure, retry, and empty states. I use it to validate the suite and demonstrate its guidance; agents do not create another mini app for every task.
+Use the short [to-do app prompt](validation/reference-app-prompt.md) to manually test any agent or skill you choose. Ask that agent to place its generated app in `validation/reference_app/`. No reference app is bundled; the folder is created when you run a trial. The prompt describes only the app idea, leaving the agent and workflow up to you. See [validation](VALIDATION.md) for packaging checks and trial guidance.
 
 [Package examples](validation/package_examples/README.md) isolate optional dependencies from the reference app. See [VALIDATION.md](VALIDATION.md) for reproducible checks, verified evidence, and checks requiring real devices.
 
@@ -112,3 +119,5 @@ I consolidated the old overlapping skills as follows:
 Original work © 2026 **Emil Kowalski**. His principles include purposeful motion, restraint, invisible craft, reviews, prototypes, and realistic stress testing. I adapted and consolidated them into mobile UX workflows, preferred Flutter tooling, accessibility, lifecycle and recovery guidance, and executable validation.
 
 I maintain this modified edition independently under the [MIT license](LICENSE), preserved in each skill with the original author’s credit and the modification copyright notice.
+
+The research workflow also adapts [Appllama's usage and app-design skills](https://github.com/Appllama/appllama-skills), reviewed from installed versions 1.1.0 and 1.3.0 on 13 October 2026. The upstream MIT notice is retained in [LICENSE-Appllama](LICENSE-Appllama) and the new skill bundle. This is an independent Flutter adaptation.

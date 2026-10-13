@@ -1,12 +1,14 @@
 ---
 name: flutter-mobile-design
-description: Design and implement Flutter mobile journeys, screens, navigation, components, and purposeful animation. Use for building or improving iOS and Android experiences, including phone and foldable adaptation.
+description: Implement or repair Flutter UI when the visual direction and journey are already established. Use for focused layout, component, and motion changes; use flutter-research-design when design decisions or reference research are needed.
 metadata:
   author: Abdullah
   edition: Flutter mobile UX and design
 ---
 
 # Flutter Mobile Design
+
+For a new app or an open-ended redesign, start with flutter-research-design. This skill handles implementation of an established direction.
 
 Modified Flutter edition, based on Emil Kowalski’s design-skills. Preserve original MIT attribution.
 
@@ -51,3 +53,7 @@ Build concrete work within the authorized scope. Ordinary work goes directly int
 - Measure UI and raster work when performance matters. Glass, blur, opacity, clips, and transforms still need evidence.
 
 Deliver the implementation, brief flow/design rationale, checks actually run, and precise remaining limits. Format/analyze with the project SDK and run relevant behavioral tests. Use Marionette on the actual running app when available; report unavailable runtime checks honestly. Device feel, assistive navigation, haptics, and sustained performance require their own evidence.
+
+## Evidence storage
+
+Follow [evidence policy](references/evidence-policy.md): temporary captures, automatic session reports off, and concise results in chat. Save durable reports only when requested.

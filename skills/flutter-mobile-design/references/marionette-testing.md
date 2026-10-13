@@ -1,6 +1,6 @@
 # Test mobile journeys with Marionette
 
-Use [Marionette MCP](https://github.com/leancodepl/marionette_mcp) as the preferred way to inspect and interact with the actual running Flutter app after feature/UI changes, reproduce bugs, and verify recovery. The reference app is a repository fixture; ordinary projects test their own app directly.
+Use [Marionette MCP](https://github.com/leancodepl/marionette_mcp) as the preferred way to inspect and interact with the actual running Flutter app after feature/UI changes, reproduce bugs, and verify recovery. A manually generated reference app can live in `validation/reference_app/`; ordinary projects test their own app directly.
 
 ## Establish the target and prepare only when authorized
 
@@ -24,7 +24,7 @@ Inspect `get_interactive_elements` before choosing a selector and after navigati
 
 Some composite controls expose an interactive descendant instead of the wrapper label/key. Inspect the actual returned tree and place stable keys on the discoverable control where the installed API allows; do not assume a wrapper key will be forwarded. After a state assertion, wait for the relevant route/overlay transition to finish before capturing its settled appearance. Use bounded waits and re-inspection rather than assuming a fixed delay proves readiness.
 
-For the reference app, browse → detail → enter a note → save → open Saved → edit; separately trigger load/save failure and retry without losing work. For the user's app, use its actual journey and authorized test data. Restore media/fixture overrides after sweeps, preserve user/live data, and disconnect or clean up only the session you own.
+For the reference app and the user's app, use the current app's primary journey, recovery paths and authorized test data. Restore media/fixture overrides after sweeps, preserve user/live data, and disconnect or clean up only the session you own.
 
 ## Verify visual craft independently
 
@@ -49,6 +49,6 @@ dart run marionette_cli:marionette --uri "$TASK_VM_URI" get-logs
 
 ## Evidence and limits
 
-Enable session reports explicitly with `MarionetteConfiguration(enableSessionReports: true)`. Record scenario, SDK/package versions, platform/device/window, steps, observed outcome, screenshots/logs, failures, restored overrides, and checks not run. The MCP session creates its own directory; the agent writes the narrative report. Reconnecting starts a new session. CLI invocations can create separate directories even with the same title; a scripted run should collect its own aggregate report instead of assuming title-based reuse. [Session reports](https://github.com/leancodepl/marionette_mcp/blob/main/docs/session-reports.md)
+Keep automatic session reports disabled by default (`enableSessionReports: false`). Follow [evidence policy](evidence-policy.md): use temporary captures and a concise response describing scenario, environment, observed outcomes and untested states. Enable reports only when a specific investigation or requested handoff needs them; avoid per-command report proliferation and restore the reporting setting afterwards. Never put debug credentials into retained reports.
 
 Marionette is runtime exploration/smoke evidence, not a deterministic CI replacement or a performance profiler. Retain relevant unit/widget/integration tests for regressions. A VM service is unavailable in release builds. Profile UI/raster frames with Flutter tooling separately; physical devices establish gesture feel, haptics, native permission UI, fold posture, and VoiceOver/TalkBack behavior. If no suitable runtime/bridge/device is available, finish the unaffected checks and report the exact unperformed journey instead of claiming success or substituting screenshots as proof.
